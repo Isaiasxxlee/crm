@@ -1,0 +1,42 @@
+{
+  "name": "zuarts-conecta-gestao",
+  "private": true,
+  "type": "module",
+  "description": "ZUARTS Sistema de Gestão: plataforma SaaS Web + PWA para gestão empresarial.",
+  "scripts": {
+    "dev": "concurrently -k \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:web": "npm run build:web -- --watch",
+    "dev:api": "tsx watch api/server.ts",
+    "build": "npm run db:generate && npm run build:web && npm run build:api",
+    "build:web": "node scripts/build-web.mjs",
+    "build:api": "tsc -p api/tsconfig.json && node scripts/copy-prisma-client.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint . --ext .ts,.tsx --max-warnings 0",
+    "test": "node --test",
+    "test:watch": "node --test --watch",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:check": "tsx scripts/check-db.ts",
+    "start:api": "node api/dist/server.js",
+    "start:web": "node api/dist/server.js"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.6.0",
+    "@prisma/client": "^7.6.0",
+    "dotenv": "^17.2.2",
+    "pg": "^8.16.3",
+    "tsx": "^4.20.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.35.0",
+    "@types/node": "^24.5.2",
+    "@types/pg": "^8.15.5",
+    "concurrently": "^9.2.1",
+    "eslint": "^9.35.0",
+    "globals": "^16.4.0",
+    "typescript": "^5.9.2",
+    "prisma": "^7.6.0",
+    "typescript-eslint": "^8.43.0"
+  }
+}
