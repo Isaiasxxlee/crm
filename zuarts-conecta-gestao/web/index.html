@@ -15,35 +15,35 @@
 
         <div id="auth-view" class="panel">
           <form id="sign-in-form" class="form">
-            <h2>Iniciar sessión</h2>
+            <h2>Entrar</h2>
             <label>Email<input id="sign-in-email" type="email" autocomplete="email" required /></label>
-            <label>Contraseña<input id="sign-in-password" type="password" autocomplete="current-password" required /></label>
+            <label>Senha<input id="sign-in-password" type="password" autocomplete="current-password" required /></label>
             <button type="submit">Entrar</button>
-            <p class="switch">¿No tienes cuenta? <a href="#" id="to-sign-up">Regístrate</a></p>
+            <p class="switch">Não tem conta? <a href="#" id="to-sign-up">Cadastre-se</a></p>
           </form>
 
           <form id="sign-up-form" class="form" hidden>
-            <h2>Crear cuenta</h2>
-            <label>Nombre<input id="sign-up-name" type="text" autocomplete="name" required /></label>
+            <h2>Criar conta</h2>
+            <label>Nome<input id="sign-up-name" type="text" autocomplete="name" required /></label>
             <label>Email<input id="sign-up-email" type="email" autocomplete="email" required /></label>
-            <label>Contraseña<input id="sign-up-password" type="password" autocomplete="new-password" required /></label>
-            <label>Empresa<input id="sign-up-company" type="text" placeholder="Mi Empresa" /></label>
-            <button type="submit">Crear cuenta</button>
-            <p class="switch">¿Ya tienes cuenta? <a href="#" id="to-sign-in">Inicia sesión</a></p>
+            <label>Senha<input id="sign-up-password" type="password" autocomplete="new-password" required /></label>
+            <label>Empresa<input id="sign-up-company" type="text" placeholder="Minha Empresa" /></label>
+            <button type="submit">Criar conta</button>
+            <p class="switch">Já tem conta? <a href="#" id="to-sign-in">Entrar</a></p>
           </form>
 
           <p id="auth-message" class="message" role="status"></p>
         </div>
 
         <div id="app-view" class="panel" hidden>
-          <h2>Sesión activa</h2>
+          <h2>Sessão ativa</h2>
           <dl class="facts">
-            <div><dt>Usuario</dt><dd id="me-name"></dd></div>
+            <div><dt>Usuário</dt><dd id="me-name"></dd></div>
             <div><dt>Email</dt><dd id="me-email"></dd></div>
             <div><dt>Empresa</dt><dd id="me-company"></dd></div>
-            <div><dt>Rol</dt><dd id="me-role"></dd></div>
+            <div><dt>Função</dt><dd id="me-role"></dd></div>
           </dl>
-          <button id="sign-out" class="secondary">Cerrar sesión</button>
+          <button id="sign-out" class="secondary">Sair</button>
           <p id="app-message" class="message" role="status"></p>
         </div>
       </section>

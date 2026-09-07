@@ -2,8 +2,8 @@
   color-scheme: light;
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
   background:
-    radial-gradient(circle at top, #f7efe7 0, #f7efe7 24%, #f1e3d2 24%, #e7d2b4 55%, #c78f5a 100%);
-  color: #1f1a17;
+    radial-gradient(circle at top, #eef4fb 0, #eef4fb 24%, #e2ecf6 24%, #cfe0ee 55%, #9fb8d6 100%);
+  color: #16213d;
 }
 
 * {
@@ -25,12 +25,12 @@ body {
 
 .hero {
   width: min(960px, 100%);
-  border: 1px solid rgba(31, 26, 23, 0.14);
+  border: 1px solid rgba(20, 48, 107, 0.14);
   border-radius: 28px;
   padding: 40px;
-  background: rgba(255, 248, 240, 0.74);
+  background: rgba(255, 255, 255, 0.78);
   backdrop-filter: blur(14px);
-  box-shadow: 0 24px 80px rgba(69, 39, 9, 0.18);
+  box-shadow: 0 24px 80px rgba(20, 48, 107, 0.18);
 }
 
 .eyebrow {
@@ -38,7 +38,7 @@ body {
   font-size: 0.82rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #8a5330;
+  color: #1b3e8c;
 }
 
 h1 {
@@ -53,7 +53,7 @@ h1 {
   margin: 20px 0 0;
   font-size: 1.1rem;
   line-height: 1.7;
-  color: #57483f;
+  color: #48566b;
 }
 
 .cards {
@@ -67,7 +67,7 @@ h1 {
   padding: 18px;
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(31, 26, 23, 0.08);
+  border: 1px solid rgba(20, 48, 107, 0.08);
 }
 
 .cards h2 {
@@ -78,19 +78,12 @@ h1 {
 .cards p {
   margin: 0;
   line-height: 1.6;
-  color: #5a4b41;
+  color: #48566b;
 }
 
-@media (max-width: 760px) {
-  .hero {
-    padding: 24px;
-  }
-
-  .cards {
-    grid-template-columns: 1fr;
 .panel {
   margin-top: 24px;
-  border: 1px solid rgba(31, 26, 23, 0.1);
+  border: 1px solid rgba(20, 48, 107, 0.1);
   border-radius: 20px;
   padding: 28px;
   background: rgba(255, 255, 255, 0.8);
@@ -110,15 +103,15 @@ h1 {
   display: grid;
   gap: 6px;
   font-size: 0.9rem;
-  color: #57483f;
+  color: #48566b;
 }
 
 .form input {
   padding: 10px 12px;
-  border: 1px solid rgba(31, 26, 23, 0.22);
+  border: 1px solid rgba(20, 48, 107, 0.22);
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.92);
-  color: #1f1a17;
+  color: #16213d;
   font: inherit;
 }
 
@@ -126,8 +119,8 @@ button {
   padding: 11px 18px;
   border: 0;
   border-radius: 10px;
-  background: #a05a2b;
-  color: #fff8f0;
+  background: #1b3e8c;
+  color: #f5f8fd;
   font: inherit;
   font-weight: 600;
   cursor: pointer;
@@ -135,18 +128,18 @@ button {
 
 button.secondary {
   background: transparent;
-  border: 1px solid rgba(31, 26, 23, 0.25);
-  color: #57483f;
+  border: 1px solid rgba(20, 48, 107, 0.25);
+  color: #48566b;
 }
 
 .switch {
   margin: 0;
   font-size: 0.9rem;
-  color: #57483f;
+  color: #48566b;
 }
 
 .switch a {
-  color: #8a5330;
+  color: #6fa83b;
 }
 
 .message {
@@ -165,20 +158,28 @@ button.secondary {
 .facts div {
   padding: 10px 12px;
   border-radius: 10px;
-  background: rgba(247, 239, 231, 0.5);
+  background: rgba(27, 62, 140, 0.06);
 }
 
 .facts dt {
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #8a5330;
+  color: #1b3e8c;
 }
 
 .facts dd {
   margin: 0;
   font-size: 0.98rem;
-  color: #1f1a17;
+  color: #16213d;
 }
+
+@media (max-width: 760px) {
+  .hero {
+    padding: 24px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
   }
 }

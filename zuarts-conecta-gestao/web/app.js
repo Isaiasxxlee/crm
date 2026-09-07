@@ -53,7 +53,7 @@ function refreshMe() {
 function errorText(data) {
   if (data && data.message) return data.message;
   if (data && data.data && data.data.message) return data.data.message;
-  return "Error inesperado";
+  return "Erro inesperado";
 }
 
 document.getElementById("sign-in-form").addEventListener("submit", (event) => {
