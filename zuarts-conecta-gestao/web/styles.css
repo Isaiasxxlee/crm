@@ -88,5 +88,97 @@ h1 {
 
   .cards {
     grid-template-columns: 1fr;
+.panel {
+  margin-top: 24px;
+  border: 1px solid rgba(31, 26, 23, 0.1);
+  border-radius: 20px;
+  padding: 28px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.form {
+  display: grid;
+  gap: 14px;
+}
+
+.form h2 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.form label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: #57483f;
+}
+
+.form input {
+  padding: 10px 12px;
+  border: 1px solid rgba(31, 26, 23, 0.22);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #1f1a17;
+  font: inherit;
+}
+
+button {
+  padding: 11px 18px;
+  border: 0;
+  border-radius: 10px;
+  background: #a05a2b;
+  color: #fff8f0;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: transparent;
+  border: 1px solid rgba(31, 26, 23, 0.25);
+  color: #57483f;
+}
+
+.switch {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #57483f;
+}
+
+.switch a {
+  color: #8a5330;
+}
+
+.message {
+  margin: 14px 0 0;
+  font-size: 0.9rem;
+  word-break: break-word;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 16px 0 0;
+}
+
+.facts div {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(247, 239, 231, 0.5);
+}
+
+.facts dt {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8a5330;
+}
+
+.facts dd {
+  margin: 0;
+  font-size: 0.98rem;
+  color: #1f1a17;
+}
   }
 }

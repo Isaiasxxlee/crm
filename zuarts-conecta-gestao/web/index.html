@@ -11,26 +11,44 @@
     <main class="shell">
       <section class="hero">
         <p class="eyebrow">ZUARTS SISTEMA DE GESTÃO</p>
-        <h1>Fundação pronta para crescer.</h1>
-        <p class="lead">
-          A aplicação já entrega Web, API, testes, build, lint e type-check em uma base independente.
-        </p>
-        <div class="cards">
-          <article>
-            <h2>Web</h2>
-            <p>Interface inicial com identidade visual própria.</p>
-          </article>
-          <article>
-            <h2>API</h2>
-            <p>Health check simples para validar a base do serviço.</p>
-          </article>
-          <article>
-            <h2>Qualidade</h2>
-            <p>Scripts prontos para build, lint, type-check e teste.</p>
-          </article>
+        <h1>Fundação de identidade.</h1>
+
+        <div id="auth-view" class="panel">
+          <form id="sign-in-form" class="form">
+            <h2>Iniciar sessión</h2>
+            <label>Email<input id="sign-in-email" type="email" autocomplete="email" required /></label>
+            <label>Contraseña<input id="sign-in-password" type="password" autocomplete="current-password" required /></label>
+            <button type="submit">Entrar</button>
+            <p class="switch">¿No tienes cuenta? <a href="#" id="to-sign-up">Regístrate</a></p>
+          </form>
+
+          <form id="sign-up-form" class="form" hidden>
+            <h2>Crear cuenta</h2>
+            <label>Nombre<input id="sign-up-name" type="text" autocomplete="name" required /></label>
+            <label>Email<input id="sign-up-email" type="email" autocomplete="email" required /></label>
+            <label>Contraseña<input id="sign-up-password" type="password" autocomplete="new-password" required /></label>
+            <label>Empresa<input id="sign-up-company" type="text" placeholder="Mi Empresa" /></label>
+            <button type="submit">Crear cuenta</button>
+            <p class="switch">¿Ya tienes cuenta? <a href="#" id="to-sign-in">Inicia sesión</a></p>
+          </form>
+
+          <p id="auth-message" class="message" role="status"></p>
+        </div>
+
+        <div id="app-view" class="panel" hidden>
+          <h2>Sesión activa</h2>
+          <dl class="facts">
+            <div><dt>Usuario</dt><dd id="me-name"></dd></div>
+            <div><dt>Email</dt><dd id="me-email"></dd></div>
+            <div><dt>Empresa</dt><dd id="me-company"></dd></div>
+            <div><dt>Rol</dt><dd id="me-role"></dd></div>
+          </dl>
+          <button id="sign-out" class="secondary">Cerrar sesión</button>
+          <p id="app-message" class="message" role="status"></p>
         </div>
       </section>
     </main>
     <script type="module" src="/app.js"></script>
   </body>
 </html>
+

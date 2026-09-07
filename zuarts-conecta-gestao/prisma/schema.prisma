@@ -13,7 +13,7 @@ enum MembershipRole {
   MEMBER
 }
 
-model Organization {
+model Company {
   id          String       @id @default(uuid()) @db.Uuid
   slug        String       @unique @db.VarChar(80)
   name        String       @db.VarChar(160)
@@ -23,23 +23,73 @@ model Organization {
 }
 
 model User {
-  id          String       @id @default(uuid()) @db.Uuid
-  email       String       @unique @db.VarChar(320)
-  name        String       @db.VarChar(160)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  memberships Membership[]
+  id            String       @id @default(uuid()) @db.Uuid
+  email         String       @unique @db.VarChar(320)
+  name          String       @db.VarChar(160)
+  emailVerified Boolean      @default(false)
+  image         String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  memberships   Membership[]
+  accounts      Account[]
+  sessions      Session[]
 }
 
 model Membership {
-  id             String         @id @default(uuid()) @db.Uuid
-  organizationId String         @db.Uuid
-  userId         String         @db.Uuid
-  role           MembershipRole @default(MEMBER)
-  createdAt      DateTime       @default(now())
-  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String         @id @default(uuid()) @db.Uuid
+  companyId String         @db.Uuid
+  userId    String         @db.Uuid
+  role      MembershipRole @default(MEMBER)
+  createdAt DateTime       @default(now())
+  company   Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([organizationId, userId])
+  @@unique([companyId, userId])
   @@index([userId])
+  @@index([companyId])
+}
+
+model Account {
+  id                    String    @id @default(uuid()) @db.Uuid
+  userId                String    @db.Uuid
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountId             String    @db.VarChar(255)
+  providerId            String    @db.VarChar(120)
+  accessToken           String?   @db.Text
+  refreshToken          String?   @db.Text
+  idToken               String?   @db.Text
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?   @db.Text
+  password              String?   @db.Text
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+}
+
+model Session {
+  id        String   @id @default(uuid()) @db.Uuid
+  expiresAt DateTime
+  token     String   @unique @db.VarChar(512)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?  @db.VarChar(45)
+  userAgent String?  @db.Text
+  userId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Verification {
+  id         String   @id @default(uuid()) @db.Uuid
+  identifier String   @db.VarChar(320)
+  value      String   @db.VarChar(320)
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([identifier, value])
 }
