@@ -21,6 +21,11 @@ services:
     environment:
       DATABASE_URL: postgresql://zuarts:zuarts@db:5432/zuarts_conecta?schema=public
       PORT: 3001
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      ADMIN_NAME: ${ADMIN_NAME}
     depends_on:
       db:
         condition: service_healthy

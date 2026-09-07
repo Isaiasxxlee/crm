@@ -10,8 +10,49 @@
   <body>
     <main class="shell">
       <section class="hero">
-        <p class="eyebrow">ZUARTS SISTEMA DE GESTÃO</p>
-        <h1>Fundação de identidade.</h1>
+        <div class="brand">
+          <svg class="brand-mark" viewBox="0 0 320 320" role="img" aria-label="Zuarts Inova Simples">
+            <defs>
+              <linearGradient id="zuarts-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#2b6fe8" />
+                <stop offset="100%" stopColor="#0b2e86" />
+              </linearGradient>
+              <linearGradient id="zuarts-green" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#b8e41a" />
+                <stop offset="100%" stopColor="#91cd00" />
+              </linearGradient>
+            </defs>
+            <path d="M70 30H250L210 70H70Z" fill="url(#zuarts-blue)" />
+            <path d="M250 30V88L184 154L150 120L190 80L170 60H250Z" fill="url(#zuarts-blue)" />
+            <path d="M70 290H250V230H118L70 178Z" fill="url(#zuarts-blue)" />
+            <path d="M70 290V218L118 170L152 204L112 244L132 264H70Z" fill="url(#zuarts-blue)" />
+            <path
+              d="M76 122H160L194 156H244"
+              fill="none"
+              stroke="url(#zuarts-green)"
+              stroke-width="14"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M56 160H142L176 194H222"
+              fill="none"
+              stroke="url(#zuarts-green)"
+              stroke-width="14"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <circle cx="72" cy="122" r="18" fill="#e4f95b" stroke="#8fc900" stroke-width="10" />
+            <circle cx="244" cy="156" r="18" fill="#e4f95b" stroke="#8fc900" stroke-width="10" />
+            <circle cx="56" cy="160" r="18" fill="#e4f95b" stroke="#8fc900" stroke-width="10" />
+            <circle cx="222" cy="194" r="18" fill="#e4f95b" stroke="#8fc900" stroke-width="10" />
+          </svg>
+          <div class="brand-copy">
+            <p class="eyebrow">ZUARTS SISTEMA DE GESTÃO</p>
+            <h1>Zuarts Inova Simples.</h1>
+            <p class="lead">Base responsiva com identidade própria, preparada para crescer como web app e PWA.</p>
+          </div>
+        </div>
 
         <div id="auth-view" class="panel">
           <form id="sign-in-form" class="form">
@@ -51,4 +92,3 @@
     <script type="module" src="/app.js"></script>
   </body>
 </html>
-

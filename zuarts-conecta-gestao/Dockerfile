@@ -10,7 +10,9 @@ FROM node:24-alpine
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=build /app/api/dist ./api/dist
+COPY --from=build /app/api ./api
 COPY --from=build /app/dist ./dist
+COPY --from=build /app/scripts ./scripts
 COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/package-lock.json ./package-lock.json
 RUN npm ci --omit=dev

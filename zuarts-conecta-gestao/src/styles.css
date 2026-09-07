@@ -2,8 +2,8 @@
   color-scheme: light;
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
   background:
-    radial-gradient(circle at top, #f7efe7 0, #f7efe7 24%, #f1e3d2 24%, #e7d2b4 55%, #c78f5a 100%);
-  color: #1f1a17;
+    radial-gradient(circle at top, #f4f7ff 0, #f4f7ff 22%, #e5edf8 22%, #cedbed 56%, #b1c6e2 100%);
+  color: #16213d;
 }
 
 * {
@@ -20,40 +20,58 @@ body {
   min-height: 100vh;
   display: grid;
   place-items: center;
-  padding: 32px;
+  padding: clamp(20px, 4vw, 40px);
 }
 
 .hero {
-  width: min(960px, 100%);
-  border: 1px solid rgba(31, 26, 23, 0.14);
+  width: min(1024px, 100%);
+  border: 1px solid rgba(20, 48, 107, 0.14);
   border-radius: 28px;
-  padding: 40px;
-  background: rgba(255, 248, 240, 0.74);
+  padding: clamp(24px, 4vw, 44px);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(14px);
-  box-shadow: 0 24px 80px rgba(69, 39, 9, 0.18);
+  box-shadow: 0 24px 80px rgba(20, 48, 107, 0.16);
+}
+
+.brand {
+  display: grid;
+  grid-template-columns: minmax(160px, 280px) minmax(0, 1fr);
+  gap: clamp(20px, 4vw, 36px);
+  align-items: center;
+}
+
+.brand-mark {
+  width: min(100%, 280px);
+  justify-self: center;
+  filter: drop-shadow(0 14px 26px rgba(11, 46, 134, 0.18));
+}
+
+.brand-copy {
+  display: grid;
+  gap: 14px;
 }
 
 .eyebrow {
-  margin: 0 0 12px;
+  margin: 0;
   font-size: 0.82rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #8a5330;
+  color: #1b3e8c;
 }
 
 h1 {
   margin: 0;
-  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  font-size: clamp(2.4rem, 5.6vw, 5rem);
   line-height: 0.95;
-  max-width: 10ch;
+  max-width: 11ch;
 }
 
 .lead {
-  max-width: 60ch;
-  margin: 20px 0 0;
-  font-size: 1.1rem;
+  max-width: 58ch;
+  margin: 0;
+  font-size: 1.05rem;
   line-height: 1.7;
-  color: #57483f;
+  color: #48566b;
 }
 
 .cards {
@@ -67,7 +85,7 @@ h1 {
   padding: 18px;
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(31, 26, 23, 0.08);
+  border: 1px solid rgba(20, 48, 107, 0.08);
 }
 
 .cards h2 {
@@ -78,15 +96,28 @@ h1 {
 .cards p {
   margin: 0;
   line-height: 1.6;
-  color: #5a4b41;
+  color: #48566b;
+}
+
+@media (max-width: 860px) {
+  .brand {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .brand-copy {
+    justify-items: center;
+  }
+
+  h1,
+  .lead {
+    max-width: 100%;
+  }
 }
 
 @media (max-width: 760px) {
-  .hero {
-    padding: 24px;
-  }
-
   .cards {
     grid-template-columns: 1fr;
+    margin-top: 24px;
   }
 }
