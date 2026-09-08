@@ -4,91 +4,179 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ZUARTS SISTEMA DE GESTÃO</title>
-    <meta name="description" content="ZUARTS Sistema de Gestão para gestão empresarial." />
+    <meta name="description" content="ZUARTS Sistema de Gestão: gestão empresarial simples e completa." />
+    <meta name="theme-color" content="#0145A1" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/assets/icon-192.png" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <main class="shell">
-      <section class="hero">
-        <div class="brand">
-          <svg class="brand-mark" viewBox="0 0 320 320" role="img" aria-label="Zuarts Inova Simples">
-            <defs>
-              <linearGradient id="zuarts-blue" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#2b6fe8" />
-                <stop offset="100%" stopColor="#0b2e86" />
-              </linearGradient>
-              <linearGradient id="zuarts-green" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#b8e41a" />
-                <stop offset="100%" stopColor="#91cd00" />
-              </linearGradient>
-            </defs>
-            <path d="M70 30H250L210 70H70Z" fill="url(#zuarts-blue)" />
-            <path d="M250 30V88L184 154L150 120L190 80L170 60H250Z" fill="url(#zuarts-blue)" />
-            <path d="M70 290H250V230H118L70 178Z" fill="url(#zuarts-blue)" />
-            <path d="M70 290V218L118 170L152 204L112 244L132 264H70Z" fill="url(#zuarts-blue)" />
-            <path
-              d="M76 122H160L194 156H244"
-              fill="none"
-              stroke="url(#zuarts-green)"
-              stroke-width="14"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M56 160H142L176 194H222"
-              fill="none"
-              stroke="url(#zuarts-green)"
-              stroke-width="14"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <circle cx="72" cy="122" r="18" fill="#e4f95b" stroke="#8fc900" stroke-width="10" />
-            <circle cx="244" cy="156" r="18" fill="#e4f95b" stroke="#8fc900" stroke-width="10" />
-            <circle cx="56" cy="160" r="18" fill="#e4f95b" stroke="#8fc900" stroke-width="10" />
-            <circle cx="222" cy="194" r="18" fill="#e4f95b" stroke="#8fc900" stroke-width="10" />
-          </svg>
-          <div class="brand-copy">
-            <p class="eyebrow">ZUARTS SISTEMA DE GESTÃO</p>
-            <h1>Zuarts Inova Simples.</h1>
-            <p class="lead">Base responsiva com identidade própria, preparada para crescer como web app e PWA.</p>
-          </div>
+    <div class="page">
+      <header class="topbar">
+        <img
+          class="brand-logo"
+          src="/assets/logo-oficial.svg"
+          alt="Logo Zuarts Inova Simples (I.S.)"
+          onerror="this.classList.add('brand-logo--missing')"
+        />
+        <div class="brand-id">
+          <h1 class="product-name">ZUARTS SISTEMA DE GESTÃO</h1>
+          <p class="company-line">Zuarts Inova Simples (I.S.)</p>
+          <p class="tagline">Tudo o que o seu negócio precisa, em um só lugar.</p>
         </div>
+      </header>
 
-        <div id="auth-view" class="panel">
-          <form id="sign-in-form" class="form">
-            <h2>Entrar</h2>
-            <label>Email<input id="sign-in-email" type="email" autocomplete="email" required /></label>
-            <label>Senha<input id="sign-in-password" type="password" autocomplete="current-password" required /></label>
-            <button type="submit">Entrar</button>
-            <p class="switch">Não tem conta? <a href="#" id="to-sign-up">Cadastre-se</a></p>
-          </form>
+      <main class="shell">
+        <section id="auth-view" class="panel">
+          <div class="panel-card">
+            <h2 class="card-title">Entrar</h2>
+            <form id="sign-in-form" class="form" novalidate>
+              <label class="field-label" for="sign-in-email">Email</label>
+              <div class="field">
+                <span class="field-icon">@</span>
+                <input id="sign-in-email" name="email" type="email" autocomplete="email" placeholder="voce@empresa.com.br" required />
+              </div>
 
-          <form id="sign-up-form" class="form" hidden>
-            <h2>Criar conta</h2>
-            <label>Nome<input id="sign-up-name" type="text" autocomplete="name" required /></label>
-            <label>Email<input id="sign-up-email" type="email" autocomplete="email" required /></label>
-            <label>Senha<input id="sign-up-password" type="password" autocomplete="new-password" required /></label>
-            <label>Empresa<input id="sign-up-company" type="text" placeholder="Minha Empresa" /></label>
-            <button type="submit">Criar conta</button>
-            <p class="switch">Já tem conta? <a href="#" id="to-sign-in">Entrar</a></p>
-          </form>
+              <label class="field-label" for="sign-in-password">Senha</label>
+              <div class="field">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="4" y="11" width="16" height="10" rx="2" />
+                  <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+                </svg>
+                <input id="sign-in-password" name="password" type="password" autocomplete="current-password" placeholder="Sua senha" required />
+              </div>
+
+              <div class="actions">
+                <button type="button" id="install-app" class="btn btn-install" hidden>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 3v12" />
+                    <path d="m7 10 5 5 5-5" />
+                    <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+                  </svg>
+                  <span>Instalar App</span>
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                    <path d="m10 17 5-5-5-5" />
+                    <path d="M15 12H3" />
+                  </svg>
+                  <span>Entrar</span>
+                </button>
+              </div>
+
+              <p class="switch">Não tem conta? <a href="#sign-up-card" id="to-sign-up">Cadastre-se</a></p>
+            </form>
+          </div>
+<div class="panel-card" id="sign-up-card">
+            <h2 class="card-title">Criar conta</h2>
+            <form id="sign-up-form" class="form" novalidate>
+              <label class="field-label" for="sign-up-name">Nome</label>
+              <div class="field">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" />
+                </svg>
+                <input id="sign-up-name" name="name" type="text" autocomplete="name" placeholder="Seu nome" required />
+              </div>
+
+              <label class="field-label" for="sign-up-email">Email</label>
+              <div class="field">
+                <span class="field-icon">@</span>
+                <input id="sign-up-email" name="email" type="email" autocomplete="email" placeholder="voce@empresa.com.br" required />
+              </div>
+
+              <label class="field-label" for="sign-up-password">Senha</label>
+              <div class="field">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="4" y="11" width="16" height="10" rx="2" />
+                  <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+                </svg>
+                <input id="sign-up-password" name="password" type="password" autocomplete="new-password" placeholder="Crie uma senha" required />
+              </div>
+
+              <label class="field-label" for="sign-up-company">Empresa</label>
+              <div class="field">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3 21V9l9-5 9 5v12" />
+                  <path d="M7 21v-6h10v6" />
+                  <path d="M10 21v-3h4v3" />
+                </svg>
+                <input id="sign-up-company" name="company" type="text" placeholder="Minha Empresa" />
+              </div>
+
+              <button type="submit" class="btn btn-blue btn-wide">Criar conta</button>
+            </form>
+          </div>
 
           <p id="auth-message" class="message" role="status"></p>
-        </div>
+        </section>
 
-        <div id="app-view" class="panel" hidden>
-          <h2>Sessão ativa</h2>
+        <section id="app-view" class="panel panel-app" hidden>
+          <h2 class="card-title">Sessão ativa</h2>
           <dl class="facts">
             <div><dt>Usuário</dt><dd id="me-name"></dd></div>
             <div><dt>Email</dt><dd id="me-email"></dd></div>
             <div><dt>Empresa</dt><dd id="me-company"></dd></div>
             <div><dt>Função</dt><dd id="me-role"></dd></div>
           </dl>
-          <button id="sign-out" class="secondary">Sair</button>
+          <div class="actions actions-end">
+            <button id="sign-out" class="btn btn-secondary">Sair</button>
+          </div>
           <p id="app-message" class="message" role="status"></p>
-        </div>
-      </section>
-    </main>
+        </section>
+<section class="services" aria-label="O que o ZUARTS Sistema de Gestão oferece">
+          <article class="service">
+            <span class="service-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="3" width="7" height="7" rx="1" />
+                <rect x="3" y="14" width="7" height="7" rx="1" />
+                <path d="M14 14h7v7h-7z" />
+              </svg>
+            </span>
+            <h3>Gestão</h3>
+            <p>Organize clientes, vendas, produtos, estoque e financeiro.</p>
+          </article>
+          <article class="service">
+            <span class="service-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 20s-7-4.6-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.4-9 9-9 9Z" />
+                <path d="M12 8v4l2.5 2.5" />
+              </svg>
+            </span>
+            <h3>Saúde</h3>
+            <p>Gerencie pacientes, profissionais, agenda e atendimentos.</p>
+          </article>
+          <article class="service">
+            <span class="service-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 11v2a1 1 0 0 0 1 1h2l4 4V6L6 10H4a1 1 0 0 0-1 1Z" />
+                <path d="M14 8c1.6 1.2 2.6 3 2.6 5s-1 3.8-2.6 5" />
+                <path d="M17 5.5c2.6 1.5 4.4 4 4.4 6.5s-1.8 5-4.4 6.5" />
+              </svg>
+            </span>
+            <h3>Marketing</h3>
+            <p>Cuide das redes sociais, tráfego pago, landing pages e websites.</p>
+          </article>
+          <article class="service">
+            <span class="service-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Z" />
+                <path d="M9.5 12 11 13.5 14.5 10" />
+              </svg>
+            </span>
+            <h3>Administração</h3>
+            <p>Controle usuários, empresa, planos e configurações.</p>
+          </article>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <p>© 2026 ZUARTS Sistema de Gestão · Zuarts Inova Simples (I.S.)</p>
+      </footer>
+    </div>
     <script type="module" src="/app.js"></script>
   </body>
 </html>

@@ -1,8 +1,5 @@
-const views = {
-  auth: document.getElementById("auth-view"),
-  app: document.getElementById("app-view"),
-};
-
+const authView = document.getElementById("auth-view");
+const appView = document.getElementById("app-view");
 const messages = {
   auth: document.getElementById("auth-message"),
   app: document.getElementById("app-message"),
@@ -33,20 +30,20 @@ function refreshMe() {
   jsonRequest("/api/me", "GET")
     .then(({ status, data }) => {
       if (status !== 200) {
-        views.auth.hidden = false;
-        views.app.hidden = true;
+        authView.hidden = false;
+        appView.hidden = true;
         return;
       }
       document.getElementById("me-name").textContent = data.user.name;
       document.getElementById("me-email").textContent = data.user.email;
       document.getElementById("me-company").textContent = data.company ? data.company.name : "—";
       document.getElementById("me-role").textContent = data.role || "—";
-      views.auth.hidden = true;
-      views.app.hidden = false;
+      authView.hidden = true;
+      appView.hidden = false;
     })
     .catch(() => {
-      views.auth.hidden = false;
-      views.app.hidden = true;
+      authView.hidden = false;
+      appView.hidden = true;
     });
 }
 
@@ -101,16 +98,65 @@ document.getElementById("sign-out").addEventListener("click", () => {
 
 document.getElementById("to-sign-up").addEventListener("click", (event) => {
   event.preventDefault();
-  document.getElementById("sign-in-form").hidden = true;
-  document.getElementById("sign-up-form").hidden = false;
-  setMessage("auth", "");
+  document.getElementById("sign-up-card").scrollIntoView({ behavior: "smooth", block: "center" });
+  const nameInput = document.getElementById("sign-up-name");
+  if (nameInput) {
+    window.setTimeout(() => nameInput.focus({ preventScroll: true }), 450);
+  }
 });
 
-document.getElementById("to-sign-in").addEventListener("click", (event) => {
+const installButton = document.getElementById("install-app");
+let deferredPrompt = null;
+
+function isInstalled() {
+  if (navigator.standalone === true) {
+    return true;
+  }
+  if (typeof window.matchMedia === "function") {
+    try {
+      return window.matchMedia("(display-mode: standalone)").matches;
+    } catch {
+      return false;
+    }
+  }
+  return false;
+}
+
+function syncInstallButton() {
+  if (isInstalled()) {
+    installButton.hidden = true;
+  }
+}
+
+window.addEventListener("beforeinstallprompt", (event) => {
   event.preventDefault();
-  document.getElementById("sign-in-form").hidden = false;
-  document.getElementById("sign-up-form").hidden = true;
-  setMessage("auth", "");
+  deferredPrompt = event;
+  syncInstallButton();
+  if (!isInstalled()) {
+    installButton.hidden = false;
+  }
 });
 
+installButton.addEventListener("click", async () => {
+  if (!deferredPrompt) {
+    return;
+  }
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  installButton.hidden = true;
+});
+
+window.addEventListener("appinstalled", () => {
+  deferredPrompt = null;
+  installButton.hidden = true;
+});
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").catch(() => {});
+  });
+}
+
+syncInstallButton();
 refreshMe();
