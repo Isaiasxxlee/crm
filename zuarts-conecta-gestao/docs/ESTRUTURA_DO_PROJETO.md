@@ -714,3 +714,172 @@ manifest.json (link) → nombre, display standalone, íconos, theme_color
 app.js → beforeinstallprompt → muestra #install-app → prompt() → appinstalled → oculta
 app.js (load) → serviceWorker.register('/sw.js') → cache (Cache API) en fetch
 ```
+---
+
+## 19. Flujos de datos
+
+Login: el navegador envia credenciales a Better Auth, que crea una Session.
+
+Luego web/app.js llama /api/me, y api/tenant.ts resuelve empresa y role.
+
+Cadastro: el navegador crea User y Account, y luego crea Company y Membership.
+
+Archivos estaticos: api/server.ts sirve dist/web/, que copia web/.
+
+---
+
+## 20. Codigo historico
+
+src/ contiene una aplicacion React historica y no participa en el servidor actual.
+
+El frontend real continua en web/.
+
+No se debe editar src/ para cambiar la pantalla local.
+
+---
+
+## 21. Seguridad y secretos
+
+.env contiene credenciales locales y no se documentan sus valores.
+
+.gitignore excluye .env.
+
+BETTER_AUTH_SECRET, DATABASE_URL y ADMIN_PASSWORD son datos sensibles.
+
+Los documentos no incluyen valores secretos.
+
+El backend valida la sesion antes de resolver empresa y role.
+
+---
+
+## 22. Tratamiento de errores
+
+api/server.ts devuelve JSON para las rutas de salud, sesion y empresa.
+
+web/app.js muestra errores en #auth-message y #app-message.
+
+/health/db devuelve 503 cuando Prisma no conecta.
+
+Un servidor detenido produce ERR_CONNECTION_REFUSED.
+
+Un build web correcto no inicia la API.
+
+---
+
+## 23. Logo y activos de marca
+
+web/index.html referencia /assets/logo-oficial.svg.
+
+El build copia la logo, el favicon y los iconos a dist/web/assets/.
+
+La logo debe conservar la imagen oficial sin filtros ni distorsion.
+
+Los iconos PWA actuales estan marcados como provisionales.
+
+---
+
+## 24. PWA y cache
+
+web/manifest.json define nombre, iconos, colores, alcance y modo standalone.
+
+web/sw.js responde peticiones GET mediante Cache API.
+
+web/app.js registra el service worker durante el evento load.
+
+beforeinstallprompt muestra el boton solo cuando el navegador lo permite.
+
+appinstalled oculta el boton despues de la instalacion.
+
+La aplicacion no simula una instalacion.
+
+---
+
+## 25. Responsividad y accesibilidad
+
+web/styles.css usa una columna para pantallas pequenas.
+
+Los botones ocupan el ancho disponible debajo de 480 pixels.
+
+Los servicios usan cuatro, dos o una columna segun el ancho disponible.
+
+Los formularios usan labels asociados por for e id.
+
+Los iconos decorativos usan aria-hidden="true".
+
+Los mensajes dinamicos usan role="status".
+
+---
+
+## 26. Autenticacion y sesion
+
+Better Auth usa email y password con Prisma Adapter.
+
+credentials: include envia la cookie de sesion.
+
+authenticateUser obtiene la sesion desde los headers.
+
+El logout usa POST /api/auth/sign-out.
+
+La vista activa aparece despues de una respuesta correcta de /api/me.
+
+---
+
+## 27. Multi-tenant
+
+Company representa una empresa.
+
+Membership conecta usuarios con empresas y contiene el role.
+
+findContext resuelve la empresa mediante la membership del usuario.
+
+ensureCompany crea la empresa y la membership inicial.
+
+Las futuras consultas de negocio deben usar el companyId resuelto.
+
+---
+
+## 28. Banco y migraciones
+
+El schema fuente es prisma/schema.prisma.
+
+Las migraciones existentes estan en prisma/migrations/.
+
+Membership usa companyId y no organizationId.
+
+npm run db:generate regenera el cliente Prisma.
+
+La interfaz no requiere una migracion para cambiar HTML o CSS.
+
+No se ejecuta prisma migrate reset durante esta auditoria.
+
+---
+
+## 29. Docker y ejecucion local
+
+db usa postgres:17-alpine y publica PostgreSQL en localhost:5433.
+
+app publica HTTP en localhost:3001.
+
+El healthcheck espera PostgreSQL antes de iniciar app.
+
+El desarrollo local usa npm.cmd run dev desde zuarts-conecta-gestao.
+
+Un terminal abierto mantiene los procesos de desarrollo activos.
+
+---
+
+## 30. Conclusion y pendientes
+
+El proyecto tiene autenticacion y aislamiento multi-tenant funcionales.
+
+El frontend real es estatico y se sirve desde dist/web/.
+
+La fuente de la pantalla es web/.
+
+Los iconos PWA provisionales necesitan activos oficiales.
+
+La auditoria no modifica codigo, banco, Prisma ni Docker.
+
+La Etapa 04 no fue iniciada.
+
+No se implementaron modulos de negocio.
