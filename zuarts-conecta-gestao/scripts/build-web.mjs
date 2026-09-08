@@ -9,12 +9,22 @@ const webDir = path.join(projectDir, "web");
 const distDir = path.join(projectDir, "dist", "web");
 const shouldWatch = process.argv.includes("--watch");
 
+async function copyDir(srcDir, destDir) {
+  await mkdir(destDir, { recursive: true });
+  for (const entry of await readdir(srcDir, { withFileTypes: true })) {
+    const srcPath = path.join(srcDir, entry.name);
+    const destPath = path.join(destDir, entry.name);
+    if (entry.isDirectory()) {
+      await copyDir(srcPath, destPath);
+    } else {
+      await copyFile(srcPath, destPath);
+    }
+  }
+}
+
 async function buildOnce() {
   await rm(distDir, { recursive: true, force: true });
-  await mkdir(distDir, { recursive: true });
-  for (const entry of await readdir(webDir)) {
-    await copyFile(path.join(webDir, entry), path.join(distDir, entry));
-  }
+  await copyDir(webDir, distDir);
 }
 
 await buildOnce();
