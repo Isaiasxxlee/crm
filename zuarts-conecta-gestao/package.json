@@ -9,7 +9,7 @@
     "dev:api": "tsx watch api/server.ts",
     "build": "npm run db:generate && npm run build:web && npm run build:api",
     "build:web": "node scripts/build-web.mjs",
-    "build:api": "tsc -p api/tsconfig.json && node scripts/copy-prisma-client.mjs",
+    "build:api": "tsc -p api/tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint . --ext .ts,.tsx --max-warnings 0",
     "test": "node --test",

@@ -21,8 +21,13 @@
       })();
     </script>
   </head>
-  <body>
-    <div class="page" id="public-page">
+  <body data-auth-state="loading">
+    <main id="session-view" class="session-view" aria-labelledby="session-title">
+      <h1 id="session-title" class="product-name">ZUARTS SISTEMA DE GESTÃO</h1>
+      <p id="session-message" class="tagline" role="status">Verificando sessão…</p>
+      <button id="session-retry" class="btn btn-primary" type="button" hidden>Tentar novamente</button>
+    </main>
+    <div class="page" id="public-page" hidden>
       <header class="topbar">
         <img
           class="brand-logo"
@@ -204,38 +209,17 @@
             </svg>
             <span>Dashboard</span>
           </button>
-          <button type="button" class="nav-item" data-module="agenda">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect x="3" y="5" width="18" height="16" rx="2" /><path d="M16 3v4M8 3v4M3 10h18" />
-            </svg>
-            <span>Agenda</span>
-          </button>
-          <button type="button" class="nav-item" data-module="clientes">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" />
-            </svg>
-            <span>Clientes</span>
-          </button>
-          <button type="button" class="nav-item" data-module="atendimentos">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M12 20s-7-4.6-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.4-9 9-9 9Z" /><path d="M12 8v4l2.5 2.5" />
-            </svg>
-            <span>Atendimentos</span>
-          </button>
-          <button type="button" class="nav-item" data-module="vendas">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <button type="button" class="nav-item" data-module="servicos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 8l-9-5-9 5 9 5 9-5Z" /><path d="M3 8v8l9 5 9-5V8" /><path d="M12 13v8" />
+            </svg><span>Serviços</span></button>
+          <div class="service-nav" role="group" aria-label="Serviços">
+            <button type="button" class="nav-item" data-module="gestao"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M3 3v18h18" /><path d="M7 15l4-4 3 3 5-6" /><path d="M15 8h4v4" />
-            </svg>
-            <span>Vendas</span>
-          </button>
-          <button type="button" class="nav-item" data-module="financeiro">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="12" cy="12" r="9" />
-              <path d="M12 7v10M9.5 9.5c0-1.4 1.2-2.2 2.5-2.2s2.5.7 2.5 2c0 1.6-2 1.8-2.5 2-1 .4-2.5.8-2.5 2.4 0 1.3 1.2 2.3 2.5 2.3s2.5-.8 2.5-2.2" />
-            </svg>
-            <span>Financeiro</span>
-          </button>
-          <button type="button" class="nav-item" data-module="marketing">
+            </svg><span>Gestão Geral</span></button>
+            <button type="button" class="nav-item" data-module="saude"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 20s-7-4.6-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.4-9 9-9 9Z" /><path d="M12 8v4l2.5 2.5" />
+            </svg><span>Saúde</span></button>
+            <button type="button" class="nav-item" data-module="marketing">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M3 11v2a1 1 0 0 0 1 1h2l4 4V6L6 10H4a1 1 0 0 0-1 1Z" />
               <path d="M14 8c1.6 1.2 2.6 3 2.6 5s-1 3.8-2.6 5" />
@@ -243,32 +227,14 @@
             </svg>
             <span>Marketing</span>
           </button>
-          <button type="button" class="nav-item" data-module="planos">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Z" /><path d="M9.5 12 11 13.5 14.5 10" />
-            </svg>
-            <span>Planos</span>
-          </button>
-          <button type="button" class="nav-item" data-module="relatorios">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z" />
-              <path d="M14 3v5h5" /><path d="M9 13h6M9 17h6" />
-            </svg>
-            <span>Relatórios</span>
-          </button>
-          <button type="button" class="nav-item" data-module="estoque">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M21 8l-9-5-9 5 9 5 9-5Z" /><path d="M3 8v8l9 5 9-5V8" /><path d="M12 13v8" />
-            </svg>
-            <span>Estoque</span>
-          </button>
-          <button type="button" class="nav-item" data-module="configuracoes">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <button type="button" class="nav-item" data-module="administracao"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="3" />
               <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" />
-            </svg>
-            <span>Configurações</span>
-          </button>
+            </svg><span>Administração</span></button>
+            <button type="button" class="nav-item" data-module="crm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" />
+            </svg><span>CRM</span></button>
+          </div>
         </nav>
 
         <div class="sidebar-footer">
@@ -523,6 +489,127 @@
             </div>
           </section>
 
+          <section class="module-view" id="module-services" hidden aria-labelledby="services-title">
+            <header class="crm-heading"><h2 id="services-title">Serviços</h2><p>Escolha uma área para continuar.</p></header>
+            <div class="dash-grid-3">
+              <article class="dash-card" data-service-group="gestao"><h3>Gestão Geral</h3><div class="service-links"><button type="button" class="service-link" data-module="clientes">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" />
+            </svg>
+            <span>Clientes</span>
+          </button>
+<button type="button" class="service-link" data-module="vendas">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 3v18h18" /><path d="M7 15l4-4 3 3 5-6" /><path d="M15 8h4v4" />
+            </svg>
+            <span>Vendas</span>
+          </button>
+<button type="button" class="service-link" data-module="financeiro">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 7v10M9.5 9.5c0-1.4 1.2-2.2 2.5-2.2s2.5.7 2.5 2c0 1.6-2 1.8-2.5 2-1 .4-2.5.8-2.5 2.4 0 1.3 1.2 2.3 2.5 2.3s2.5-.8 2.5-2.2" />
+            </svg>
+            <span>Financeiro</span>
+          </button>
+<button type="button" class="service-link" data-module="relatorios">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z" />
+              <path d="M14 3v5h5" /><path d="M9 13h6M9 17h6" />
+            </svg>
+            <span>Relatórios</span>
+          </button>
+<button type="button" class="service-link" data-module="estoque">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 8l-9-5-9 5 9 5 9-5Z" /><path d="M3 8v8l9 5 9-5V8" /><path d="M12 13v8" />
+            </svg>
+            <span>Estoque</span>
+          </button></div></article>
+              <article class="dash-card" data-service-group="saude"><h3>Saúde</h3><div class="service-links"><button type="button" class="service-link" data-module="agenda">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="16" rx="2" /><path d="M16 3v4M8 3v4M3 10h18" />
+            </svg>
+            <span>Agenda</span>
+          </button>
+<button type="button" class="service-link" data-module="atendimentos">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 20s-7-4.6-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.4-9 9-9 9Z" /><path d="M12 8v4l2.5 2.5" />
+            </svg>
+            <span>Atendimentos</span>
+          </button></div></article>
+              <article class="dash-card" data-service-group="marketing"><h3>Marketing</h3><button class="service-link" type="button" data-module="marketing">Abrir Marketing <span aria-hidden="true">→</span></button></article>
+              <article class="dash-card" data-service-group="administracao"><h3>Administração</h3><div class="service-links"><button type="button" class="service-link" data-module="planos">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Z" /><path d="M9.5 12 11 13.5 14.5 10" />
+            </svg>
+            <span>Planos</span>
+          </button>
+<button type="button" class="service-link" data-module="configuracoes">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" />
+            </svg>
+            <span>Configurações</span>
+          </button></div></article>
+              <article class="dash-card" data-service-group="crm"><h3>CRM</h3><p class="tagline">Gestão de relacionamento e oportunidades</p><button class="service-link" type="button" data-module="crm">Abrir Dashboard CRM <span aria-hidden="true">→</span></button></article>
+            </div>
+          </section>
+          <section class="module-view" id="module-crm" hidden aria-labelledby="crm-title">
+            <header class="crm-heading">
+              <button type="button" class="crm-back" data-module="servicos">Serviços <span aria-hidden="true">/</span></button>
+              <h2 id="crm-title">CRM</h2>
+              <p>Gestão de relacionamento e oportunidades</p>
+            </header>
+            <nav class="crm-nav" aria-label="Navegação do CRM"><button type="button" class="crm-nav-item" data-crm-page="dashboard" aria-current="page">Dashboard</button>
+<button type="button" class="crm-nav-item" data-crm-page="leads">Leads</button>
+<button type="button" class="crm-nav-item" data-crm-page="contatos">Contatos</button>
+<button type="button" class="crm-nav-item" data-crm-page="empresas">Empresas</button>
+<button type="button" class="crm-nav-item" data-crm-page="oportunidades">Oportunidades</button>
+<button type="button" class="crm-nav-item" data-crm-page="pipeline">Pipeline</button>
+<button type="button" class="crm-nav-item" data-crm-page="deals">Deals</button>
+<button type="button" class="crm-nav-item" data-crm-page="atividades">Atividades</button>
+<button type="button" class="crm-nav-item" data-crm-page="follow-ups">Follow-ups</button></nav>
+            <section class="module-view" id="crm-dashboard" aria-labelledby="crm-overview-title">
+              <div class="dash-card-head crm-overview"><h3 id="crm-overview-title">Visão geral do relacionamento comercial</h3><span class="dash-card-tag">Demonstração</span></div>
+              <p class="mock-note">Dados de exemplo — números, etapas e atividades ilustrativos, sem vínculo com os registros da sua empresa.</p>
+              <div class="stat-grid"><article class="stat-card"><div class="stat-icon stat-icon--blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" />
+            </svg></div><h4 class="stat-label">Leads</h4><p class="stat-value">24</p><p class="tagline">Primeiros contatos</p></article>
+<article class="stat-card"><div class="stat-icon stat-icon--blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" />
+            </svg></div><h4 class="stat-label">Contatos</h4><p class="stat-value">86</p><p class="tagline">Relacionamentos cadastrados</p></article>
+<article class="stat-card"><div class="stat-icon stat-icon--blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 8l-9-5-9 5 9 5 9-5Z" /><path d="M3 8v8l9 5 9-5V8" /><path d="M12 13v8" />
+            </svg></div><h4 class="stat-label">Empresas</h4><p class="stat-value">32</p><p class="tagline">Empresas no relacionamento</p></article>
+<article class="stat-card"><div class="stat-icon stat-icon--blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 3v18h18" /><path d="M7 15l4-4 3 3 5-6" /><path d="M15 8h4v4" />
+            </svg></div><h4 class="stat-label">Oportunidades</h4><p class="stat-value">12</p><p class="tagline">Distribuídas no pipeline</p></article></div>
+              <article class="dash-card">
+                <div class="dash-card-head"><h3>Pipeline comercial</h3><span class="dash-card-tag">12 oportunidades de exemplo</span></div>
+                <ol class="crm-pipeline"><li class="crm-stage"><div class="crm-stage-heading"><h4>Novo</h4><span>4</span></div><p>Primeira conversa</p><div class="crm-deal-preview"><strong>Contato inicial</strong><span>Empresa exemplo A</span></div></li>
+<li class="crm-stage"><div class="crm-stage-heading"><h4>Qualificação</h4><span>3</span></div><p>Entender a necessidade</p><div class="crm-deal-preview"><strong>Reunião de descoberta</strong><span>Empresa exemplo B</span></div></li>
+<li class="crm-stage"><div class="crm-stage-heading"><h4>Proposta</h4><span>2</span></div><p>Apresentar a solução</p><div class="crm-deal-preview"><strong>Proposta comercial</strong><span>Empresa exemplo C</span></div></li>
+<li class="crm-stage"><div class="crm-stage-heading"><h4>Negociação</h4><span>2</span></div><p>Alinhar as condições</p><div class="crm-deal-preview"><strong>Revisão da proposta</strong><span>Empresa exemplo D</span></div></li>
+<li class="crm-stage crm-stage--closed"><div class="crm-stage-heading"><h4>Fechado</h4><span>1</span></div><p>Iniciar o relacionamento</p><div class="crm-deal-preview"><strong>Acordo confirmado</strong><span>Empresa exemplo E</span></div></li></ol>
+              </article>
+              <div class="dash-grid-2">
+                <article class="dash-card"><h3>Atividades recentes</h3><ul class="activity-list">
+                  <li><span class="activity-dot activity-dot--blue"></span><span class="activity-text">Contato inicial com a Empresa exemplo A</span><time>Hoje, 10:30</time></li>
+                  <li><span class="activity-dot activity-dot--blue"></span><span class="activity-text">Proposta enviada para a Empresa exemplo C</span><time>Hoje, 09:00</time></li>
+                  <li><span class="activity-dot activity-dot--green"></span><span class="activity-text">Acordo confirmado com a Empresa exemplo E</span><time>Ontem</time></li>
+                </ul></article>
+                <article class="dash-card"><h3>Próximos follow-ups</h3><ul class="appointment-list">
+                  <li><span class="appt-time">14:00</span><div class="appt-info"><strong>Retomar a conversa</strong><small>Hoje · Empresa exemplo A</small></div></li>
+                  <li><span class="appt-time">10:00</span><div class="appt-info"><strong>Revisar a proposta</strong><small>Amanhã · Empresa exemplo D</small></div></li>
+                  <li><span class="appt-time">15:30</span><div class="appt-info"><strong>Confirmar os próximos passos</strong><small>Amanhã · Empresa exemplo B</small></div></li>
+                </ul></article>
+              </div>
+            </section>
+            <section id="crm-placeholder" class="empty-state" hidden aria-labelledby="crm-placeholder-title">
+              <h3 id="crm-placeholder-title">Leads</h3>
+              <p>Esta área está em preparação. Os cadastros e as consultas ficam para as próximas etapas.</p>
+              <button type="button" class="btn btn-primary" data-crm-page="dashboard">Voltar ao Dashboard CRM</button>
+            </section>
+          </section>
           <section class="module-view" id="module-placeholder" data-module-view="placeholder" hidden>
             <div class="empty-state">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

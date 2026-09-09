@@ -73,6 +73,20 @@ body {
   flex-direction: column;
 }
 
+.session-view {
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 28px;
+  padding: 28px;
+  text-align: center;
+}
+
+.session-view .product-name {
+  color: var(--ink);
+}
+
 .topbar {
   display: flex;
   align-items: center;
@@ -1503,5 +1517,213 @@ body {
 
   .appt-info small {
     display: block;
+  }
+}
+
+.service-nav,
+.service-links {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.service-nav {
+  padding-inline-start: 12px;
+}
+
+.service-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.88rem;
+  text-align: start;
+  cursor: pointer;
+}
+
+.service-link svg {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 auto;
+}
+
+.service-link:hover {
+  background: var(--bg);
+}
+
+.crm-heading h2 {
+  margin: 0 0 6px;
+  color: var(--ink);
+  font-size: 1.4rem;
+}
+
+.service-title,
+#module-crm .dash-card h3,
+#module-services .dash-card h3 {
+  color: var(--ink);
+}
+
+[data-theme="dark"] #module-crm .stat-icon--blue,
+[data-theme="dark"] #module-crm .appt-time {
+  color: var(--ink);
+}
+
+.crm-heading p {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.crm-back {
+  margin-bottom: 12px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+  min-height: 24px;
+}
+
+.crm-back:hover {
+  text-decoration: underline;
+}
+
+.crm-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 6px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+
+.crm-nav-item {
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-soft);
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.crm-nav-item:hover {
+  color: var(--ink);
+  background: var(--bg);
+}
+
+.crm-nav-item[aria-current="page"] {
+  color: #ffffff;
+  background: var(--blue-600);
+}
+
+.crm-overview {
+  margin: 0;
+  flex-wrap: wrap;
+}
+
+.crm-overview h3 {
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+.crm-pipeline {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.crm-stage {
+  min-width: 0;
+  padding: 12px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+.crm-stage-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.crm-stage-heading h4 {
+  margin: 0;
+  font-size: 0.82rem;
+}
+
+.crm-stage-heading > span {
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.crm-stage--closed {
+  border-top: 3px solid var(--green-500);
+}
+
+.crm-stage p {
+  margin: 10px 0;
+  color: var(--ink-soft);
+  font-size: 0.74rem;
+}
+
+.crm-deal-preview {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-size: 0.76rem;
+  overflow-wrap: anywhere;
+}
+
+.crm-deal-preview span {
+  color: var(--ink-soft);
+}
+
+#module-crm .dash-card-head {
+  flex-wrap: wrap;
+}
+
+#module-crm .activity-list li {
+  flex-wrap: wrap;
+}
+
+#module-crm .appt-info strong {
+  white-space: normal;
+}
+
+#crm-placeholder h3 {
+  margin: 0 0 12px;
+  color: var(--ink);
+}
+
+#crm-placeholder .btn {
+  margin-top: 20px;
+}
+
+@media (max-width: 1279px) {
+  .crm-pipeline {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .crm-pipeline {
+    grid-template-columns: 1fr;
   }
 }

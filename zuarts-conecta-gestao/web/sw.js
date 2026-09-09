@@ -1,4 +1,4 @@
-const CACHE_NAME = "zuarts-cache-v2";
+const CACHE_NAME = "zuarts-cache-v6";
 
 self.addEventListener("install", () => {
   self.skipWaiting();

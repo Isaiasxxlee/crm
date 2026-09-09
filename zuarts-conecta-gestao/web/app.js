@@ -1,6 +1,9 @@
 const publicPage = document.getElementById("public-page");
 const dashboardView = document.getElementById("dashboard-view");
 const authView = document.getElementById("auth-view");
+const sessionView = document.getElementById("session-view");
+const sessionMessage = document.getElementById("session-message");
+const sessionRetry = document.getElementById("session-retry");
 const messages = {
   auth: document.getElementById("auth-message"),
 };
@@ -36,16 +39,23 @@ function initials(name) {
   return (first + last).toUpperCase();
 }
 
+function setAuthState(state) {
+  document.body.dataset.authState = state;
+  publicPage.hidden = state !== "anonymous";
+  dashboardView.hidden = state !== "authenticated";
+  sessionView.hidden = state !== "loading" && state !== "error";
+  sessionRetry.hidden = state !== "error";
+  sessionMessage.textContent = state === "error"
+    ? "Não foi possível verificar a sessão. Verifique sua conexão e tente novamente."
+    : "Verificando sessão…";
+}
+
 function showPublic() {
-  publicPage.hidden = false;
-  dashboardView.hidden = true;
+  setAuthState("anonymous");
   authView.hidden = false;
 }
 
 function showDashboard(data) {
-  publicPage.hidden = true;
-  dashboardView.hidden = false;
-
   const name = (data.user && (data.user.name || data.user.email)) || "Usuário";
   const firstName = name.split(" ")[0];
   const companyName = data.company ? data.company.name : "—";
@@ -59,19 +69,27 @@ function showDashboard(data) {
   document.getElementById("sidebar-company").textContent = companyName;
 
   showModule(currentModule);
+  setAuthState("authenticated");
 }
 
 function refreshMe() {
-  jsonRequest("/api/me", "GET")
+  setAuthState("loading");
+  return jsonRequest("/api/me", "GET")
     .then(({ status, data }) => {
-      if (status !== 200) {
+      if (status === 401) {
         showPublic();
         return;
       }
-      showDashboard(data);
+      if (status === 200 && data?.user?.id) {
+        showDashboard(data);
+        return;
+      }
+      setAuthState("error");
     })
-    .catch(() => showPublic());
+    .catch(() => setAuthState("error"));
 }
+
+sessionRetry.addEventListener("click", refreshMe);
 
 function errorText(data) {
   if (data && data.message) return data.message;
@@ -133,6 +151,11 @@ document.getElementById("dashboard-sign-out").addEventListener("click", () => {
 
 const MODULE_LABELS = {
   dashboard: "Dashboard",
+  servicos: "Serviços",
+  gestao: "Gestão Geral",
+  saude: "Saúde",
+  administracao: "Administração",
+  crm: "CRM",
   agenda: "Agenda",
   clientes: "Clientes",
   atendimentos: "Atendimentos",
@@ -145,8 +168,12 @@ const MODULE_LABELS = {
   configuracoes: "Configurações",
 };
 
-const navItems = Array.from(document.querySelectorAll(".nav-item"));
+const navItems = Array.from(document.querySelectorAll("[data-module]"));
 const moduleDashboard = document.getElementById("module-dashboard");
+const moduleServices = document.getElementById("module-services");
+const serviceGroups = Array.from(document.querySelectorAll("[data-service-group]"));
+const moduleCrm = document.getElementById("module-crm");
+const crmNavItems = Array.from(document.querySelectorAll(".crm-nav-item"));
 const modulePlaceholder = document.getElementById("module-placeholder");
 const placeholderTitle = document.getElementById("placeholder-title");
 const placeholderText = document.getElementById("placeholder-text");
@@ -172,12 +199,23 @@ function showModule(moduleId) {
     }
   });
 
-  if (id === "dashboard") {
-    moduleDashboard.hidden = false;
-    modulePlaceholder.hidden = true;
-  } else {
-    moduleDashboard.hidden = true;
-    modulePlaceholder.hidden = false;
+  const isServiceGroup = ["gestao", "saude", "administracao"].includes(id);
+  dashHeaderTitle.classList.toggle("service-title", id === "crm" || id === "servicos" || isServiceGroup);
+  moduleDashboard.hidden = id !== "dashboard";
+  moduleServices.hidden = id !== "servicos" && !isServiceGroup;
+  moduleCrm.hidden = id !== "crm";
+  modulePlaceholder.hidden = id === "dashboard" || id === "crm" || !moduleServices.hidden;
+
+  if (!moduleServices.hidden) {
+    document.getElementById("services-title").textContent = label;
+    serviceGroups.forEach((group) => {
+      group.hidden = isServiceGroup && group.dataset.serviceGroup !== id;
+    });
+  }
+  if (id === "crm") {
+    showCrmPage("dashboard");
+  }
+  if (!modulePlaceholder.hidden) {
     placeholderTitle.textContent = label;
     placeholderText.textContent = id === "planos" ? "Em breve." : "Módulo em desenvolvimento.";
   }
@@ -188,6 +226,25 @@ function showModule(moduleId) {
 
   closeSidebarOnMobile();
 }
+
+function showCrmPage(pageId) {
+  const selected = crmNavItems.find((item) => item.dataset.crmPage === pageId) || crmNavItems[0];
+  const isDashboard = selected.dataset.crmPage === "dashboard";
+  document.getElementById("crm-dashboard").hidden = !isDashboard;
+  document.getElementById("crm-placeholder").hidden = isDashboard;
+  document.getElementById("crm-placeholder-title").textContent = selected.textContent;
+  crmNavItems.forEach((item) => {
+    if (item === selected) {
+      item.setAttribute("aria-current", "page");
+    } else {
+      item.removeAttribute("aria-current");
+    }
+  });
+}
+
+document.querySelectorAll("[data-crm-page]").forEach((item) => {
+  item.addEventListener("click", () => showCrmPage(item.dataset.crmPage));
+});
 
 navItems.forEach((item) => {
   item.addEventListener("click", () => showModule(item.dataset.module));

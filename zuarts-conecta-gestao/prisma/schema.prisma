@@ -1,6 +1,7 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../api/generated"
+  provider            = "prisma-client"
+  output              = "../api/generated"
+  importFileExtension = "js"
 }
 
 datasource db {
@@ -14,12 +15,21 @@ enum MembershipRole {
 }
 
 model Company {
-  id          String       @id @default(uuid()) @db.Uuid
-  slug        String       @unique @db.VarChar(80)
-  name        String       @db.VarChar(160)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  memberships Membership[]
+  id            String       @id @default(uuid()) @db.Uuid
+  slug          String       @unique @db.VarChar(80)
+  name          String       @db.VarChar(160)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  memberships   Membership[]
+  crmCompanies  CrmCompany[]
+  crmContacts   Contact[]
+  crmLeads      Lead[]
+  crmDeals      Deal[]
+  crmActivities Activity[]
+  crmFollowUps  FollowUp[]
+  crmEvidence   Evidence[]
+  crmAgentTasks AgentTask[]
+  crmAgentRuns  AgentRun[]
 }
 
 model User {
@@ -33,6 +43,14 @@ model User {
   memberships   Membership[]
   accounts      Account[]
   sessions      Session[]
+  crmContacts   Contact[]    @relation("CrmContactOwner")
+  crmDeals      Deal[]       @relation("CrmDealOwner")
+  crmLeads      Lead[]       @relation("CrmLeadOwner")
+  crmActivities Activity[]   @relation("CrmActivityAuthor")
+  crmFollowUps  FollowUp[]   @relation("CrmFollowUpAuthor")
+  crmEvidence   Evidence[]   @relation("CrmEvidenceAuthor")
+  crmAgentTasks AgentTask[]  @relation("CrmAgentTaskCreator")
+  crmAgentRuns  AgentRun[]   @relation("CrmAgentRunCreator")
 }
 
 model Membership {
@@ -92,4 +110,317 @@ model Verification {
   updatedAt  DateTime @updatedAt
 
   @@unique([identifier, value])
+}
+enum RecordSource {
+  MANUAL
+  IMPORT
+  API
+  WEBFORM
+}
+
+enum LeadStatus {
+  NEW
+  OPEN
+  IN_PROGRESS
+  OPEN_DEAL
+  UNQUALIFIED
+  CONNECTED
+  BAD_TIMING
+}
+
+enum DealStage {
+  DEMO_BOOKED
+  QUALIFIED_TO_BUY
+  UNQUALIFIED_TO_BUY
+  DECISION_MAKER_BOUGHT_IN
+  CONTRACT_SENT
+  CLOSED_WON
+  CLOSED_LOST
+}
+
+enum ActivityType {
+  NOTE
+  CALL
+  EMAIL
+  MEETING
+  TASK
+  STAGE_CHANGE
+  ENRICHMENT
+}
+
+enum AgentTaskStatus {
+  QUEUED
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum AgentRunStatus {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  FAILED
+  CANCELLED
+}
+
+model CrmCompany {
+  id            String       @id @default(uuid()) @db.Uuid
+  companyId     String       @db.Uuid
+  name          String       @db.VarChar(200)
+  website       String?      @db.VarChar(500)
+  description   String?      @db.Text
+  industry      String?      @db.VarChar(120)
+  subIndustry   String?      @db.VarChar(120)
+  city          String?      @db.VarChar(120)
+  stateCode     String?      @db.VarChar(40)
+  country       String?      @db.VarChar(80)
+  phone         String?      @db.VarChar(40)
+  email         String?      @db.VarChar(320)
+  linkedinUrl   String?      @db.VarChar(500)
+  source        RecordSource @default(MANUAL)
+  lastActivityAt DateTime?
+  archivedAt    DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  company    Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  contacts   Contact[]
+  leads      Lead[]
+  deals      Deal[]
+  activities Activity[]
+  followUps  FollowUp[]
+  evidence   Evidence[]
+
+  @@index([companyId])
+  @@index([companyId, name])
+  @@index([companyId, archivedAt])
+  @@index([companyId, lastActivityAt])
+}
+
+model Contact {
+  id            String       @id @default(uuid()) @db.Uuid
+  companyId     String       @db.Uuid
+  crmCompanyId  String?      @db.Uuid
+  firstName     String       @db.VarChar(120)
+  lastName      String?      @db.VarChar(120)
+  email         String?      @db.VarChar(320)
+  phone         String?      @db.VarChar(40)
+  title         String?      @db.VarChar(120)
+  source        RecordSource @default(MANUAL)
+  ownerId       String?      @db.Uuid
+  lastActivityAt DateTime?
+  archivedAt    DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  company    Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  crmCompany CrmCompany? @relation(fields: [crmCompanyId], references: [id], onDelete: SetNull)
+  owner      User?       @relation("CrmContactOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  deals      Deal[]      @relation("DealContact")
+  leads      Lead[]      @relation("LeadContact")
+  activities Activity[]  @relation("ActivityContact")
+  followUps  FollowUp[]  @relation("FollowUpContact")
+  evidence   Evidence[]  @relation("EvidenceContact")
+
+  @@unique([companyId, email])
+  @@index([companyId, crmCompanyId])
+  @@index([companyId, ownerId])
+  @@index([companyId, archivedAt])
+  @@index([companyId, lastActivityAt])
+}
+model Lead {
+  id            String       @id @default(uuid()) @db.Uuid
+  companyId     String       @db.Uuid
+  crmCompanyId String?      @db.Uuid
+  contactId    String?      @db.Uuid
+  firstName    String       @db.VarChar(120)
+  lastName     String?      @db.VarChar(120)
+  email        String?      @db.VarChar(320)
+  phone        String?      @db.VarChar(40)
+  source       RecordSource @default(MANUAL)
+  status       LeadStatus   @default(NEW)
+  notes        String?      @db.Text
+  ownerId      String?      @db.Uuid
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  company    Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  crmCompany CrmCompany? @relation(fields: [crmCompanyId], references: [id], onDelete: SetNull)
+  contact    Contact?    @relation("LeadContact", fields: [contactId], references: [id], onDelete: SetNull)
+  owner      User?       @relation("CrmLeadOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  followUps  FollowUp[]  @relation("FollowUpLead")
+  evidence   Evidence[]  @relation("EvidenceLead")
+
+  @@unique([companyId, email])
+  @@index([companyId, status])
+  @@index([companyId, crmCompanyId])
+  @@index([companyId, ownerId])
+  @@index([companyId, contactId])
+}
+
+model Deal {
+  id                String       @id @default(uuid()) @db.Uuid
+  companyId         String       @db.Uuid
+  crmCompanyId      String?      @db.Uuid
+  contactId         String?      @db.Uuid
+  name              String       @db.VarChar(200)
+  description       String?      @db.Text
+  stage             DealStage    @default(DEMO_BOOKED)
+  stageChangedAt    DateTime     @default(now())
+  amount            Decimal?     @db.Decimal(14, 2)
+  currency          String       @default("BRL") @db.VarChar(8)
+  expectedCloseDate DateTime?
+  closedAt          DateTime?
+  closedReason      String?      @db.VarChar(200)
+  ownerId           String?      @db.Uuid
+  lastActivityAt    DateTime?
+  archivedAt        DateTime?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  company    Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  crmCompany CrmCompany? @relation(fields: [crmCompanyId], references: [id], onDelete: SetNull)
+  contact    Contact?    @relation("DealContact", fields: [contactId], references: [id], onDelete: SetNull)
+  owner      User?       @relation("CrmDealOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  activities Activity[]  @relation("ActivityDeal")
+  followUps  FollowUp[]  @relation("FollowUpDeal")
+  evidence   Evidence[]  @relation("EvidenceDeal")
+
+  @@index([companyId, crmCompanyId])
+  @@index([companyId, ownerId])
+  @@index([companyId, stage])
+  @@index([companyId, expectedCloseDate])
+  @@index([companyId, archivedAt])
+  @@index([companyId, lastActivityAt])
+}
+
+model Activity {
+  id            String       @id @default(uuid()) @db.Uuid
+  companyId     String       @db.Uuid
+  type          ActivityType
+  subject       String?      @db.VarChar(280)
+  body          String?      @db.Text
+  occurredAt    DateTime?
+  dueAt         DateTime?
+  completedAt   DateTime?
+  crmCompanyId  String?      @db.Uuid
+  contactId     String?      @db.Uuid
+  dealId        String?      @db.Uuid
+  createdById   String       @db.Uuid
+  meta          Json?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  company    Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  crmCompany CrmCompany? @relation(fields: [crmCompanyId], references: [id], onDelete: SetNull)
+  contact    Contact?    @relation("ActivityContact", fields: [contactId], references: [id], onDelete: Cascade)
+  deal       Deal?       @relation("ActivityDeal", fields: [dealId], references: [id], onDelete: Cascade)
+  createdBy  User        @relation("CrmActivityAuthor", fields: [createdById], references: [id])
+
+  @@index([companyId, createdAt])
+  @@index([companyId, dueAt])
+  @@index([companyId, createdById])
+}
+model FollowUp {
+  id           String   @id @default(uuid()) @db.Uuid
+  companyId    String   @db.Uuid
+  crmCompanyId String?  @db.Uuid
+  contactId    String?  @db.Uuid
+  leadId       String?  @db.Uuid
+  dealId       String?  @db.Uuid
+  scheduledAt  DateTime
+  completedAt  DateTime?
+  note         String?  @db.Text
+  createdById  String   @db.Uuid
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  company    Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  crmCompany CrmCompany? @relation(fields: [crmCompanyId], references: [id], onDelete: SetNull)
+  contact    Contact?    @relation("FollowUpContact", fields: [contactId], references: [id], onDelete: Cascade)
+  lead       Lead?       @relation("FollowUpLead", fields: [leadId], references: [id], onDelete: Cascade)
+  deal       Deal?       @relation("FollowUpDeal", fields: [dealId], references: [id], onDelete: Cascade)
+  createdBy  User        @relation("CrmFollowUpAuthor", fields: [createdById], references: [id])
+
+  @@index([companyId, scheduledAt])
+  @@index([companyId, completedAt])
+  @@index([companyId, createdById])
+}
+
+model Evidence {
+  id           String       @id @default(uuid()) @db.Uuid
+  companyId    String       @db.Uuid
+  kind         String       @db.VarChar(80)
+  title        String?      @db.VarChar(280)
+  content      String?      @db.Text
+  url          String?      @db.VarChar(500)
+  crmCompanyId String?      @db.Uuid
+  contactId    String?      @db.Uuid
+  leadId       String?      @db.Uuid
+  dealId       String?      @db.Uuid
+  source       RecordSource @default(MANUAL)
+  createdById  String       @db.Uuid
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  company    Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  crmCompany CrmCompany? @relation(fields: [crmCompanyId], references: [id], onDelete: SetNull)
+  contact    Contact?    @relation("EvidenceContact", fields: [contactId], references: [id], onDelete: Cascade)
+  lead       Lead?       @relation("EvidenceLead", fields: [leadId], references: [id], onDelete: Cascade)
+  deal       Deal?       @relation("EvidenceDeal", fields: [dealId], references: [id], onDelete: Cascade)
+  createdBy  User        @relation("CrmEvidenceAuthor", fields: [createdById], references: [id])
+
+  @@index([companyId, createdAt])
+  @@index([companyId, createdById])
+}
+model AgentTask {
+  id           String          @id @default(uuid()) @db.Uuid
+  companyId    String          @db.Uuid
+  kind         String          @db.VarChar(120)
+  status       AgentTaskStatus @default(QUEUED)
+  subject      String?         @db.VarChar(280)
+  payload      Json?
+  priority     Int             @default(0)
+  dueAt        DateTime?
+  leasedUntil  DateTime?
+  startedAt    DateTime?
+  finishedAt   DateTime?
+  errorMessage String?         @db.Text
+  createdById  String?         @db.Uuid
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  company   Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdBy User?      @relation("CrmAgentTaskCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  runs      AgentRun[]
+
+  @@index([companyId, status])
+  @@index([companyId, dueAt])
+  @@index([companyId, createdAt])
+}
+
+model AgentRun {
+  id           String         @id @default(uuid()) @db.Uuid
+  companyId    String         @db.Uuid
+  taskId       String?        @db.Uuid
+  status       AgentRunStatus @default(QUEUED)
+  input        Json?
+  result       Json?
+  summary      String?        @db.Text
+  errorCode    String?        @db.VarChar(120)
+  errorMessage String?        @db.Text
+  startedAt    DateTime?
+  finishedAt   DateTime?
+  createdById  String?        @db.Uuid
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  company   Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  task      AgentTask? @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  createdBy User?      @relation("CrmAgentRunCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([companyId, status])
+  @@index([companyId, taskId])
+  @@index([companyId, createdAt])
 }

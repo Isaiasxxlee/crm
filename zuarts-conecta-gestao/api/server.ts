@@ -6,6 +6,7 @@ import { toNodeHandler } from "better-auth/node";
 import { auth } from "./auth.js";
 import { prisma } from "./db.js";
 import { authenticateUser, ensureCompany, findContext } from "./tenant.js";
+import { handleCrmRequest } from "./crm/router.js";
 
 const port = Number(process.env.PORT ?? 3001);
 const distDir = path.resolve(process.cwd(), "dist");
@@ -40,6 +41,11 @@ const server = http.createServer(async (req, res) => {
 
   if (pathname === "/api/company" && req.method === "POST") {
     await handleCompany(req, res);
+    return;
+  }
+
+  if (pathname.startsWith("/api/crm/")) {
+    await handleCrmRequest(req, res, pathname);
     return;
   }
 
