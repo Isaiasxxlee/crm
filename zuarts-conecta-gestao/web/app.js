@@ -298,7 +298,7 @@ document.getElementById("dashboard-sign-out").addEventListener("click", () => {
 const MODULE_LABELS = {
   dashboard: "Dashboard",
   servicos: "Serviços",
-  gestao: "Gestão Geral",
+  gestao: "Gestão",
   saude: "Saúde",
   administracao: "Administração",
   crm: "CRM",
@@ -319,6 +319,8 @@ const moduleDashboard = document.getElementById("module-dashboard");
 const moduleServices = document.getElementById("module-services");
 const serviceGroups = Array.from(document.querySelectorAll("[data-service-group]"));
 const moduleCrm = document.getElementById("module-crm");
+const moduleGestao = document.getElementById("module-gestao");
+const gestaoNavItems = Array.from(document.querySelectorAll(".area-nav-item[data-gestao-page]"));
 const crmNavItems = Array.from(document.querySelectorAll(".crm-nav-item"));
 const modulePlaceholder = document.getElementById("module-placeholder");
 const placeholderTitle = document.getElementById("placeholder-title");
@@ -345,12 +347,13 @@ function showModule(moduleId) {
     }
   });
 
-  const isServiceGroup = ["gestao", "saude", "administracao"].includes(id);
-  dashHeaderTitle.classList.toggle("service-title", id === "crm" || id === "servicos" || isServiceGroup);
+  const isServiceGroup = ["saude", "administracao"].includes(id);
+  dashHeaderTitle.classList.toggle("service-title", id === "crm" || id === "servicos" || id === "gestao" || isServiceGroup);
   moduleDashboard.hidden = id !== "dashboard";
   moduleServices.hidden = id !== "servicos" && !isServiceGroup;
   moduleCrm.hidden = id !== "crm";
-  modulePlaceholder.hidden = id === "dashboard" || id === "crm" || !moduleServices.hidden;
+  moduleGestao.hidden = id !== "gestao";
+  modulePlaceholder.hidden = id === "dashboard" || id === "crm" || id === "gestao" || !moduleServices.hidden;
 
   if (!moduleServices.hidden) {
     document.getElementById("services-title").textContent = label;
@@ -360,6 +363,9 @@ function showModule(moduleId) {
   }
   if (id === "crm") {
     showCrmPage("dashboard");
+  }
+  if (id === "gestao") {
+    showGestaoPage("dashboard");
   }
   if (!modulePlaceholder.hidden) {
     placeholderTitle.textContent = label;
@@ -372,6 +378,31 @@ function showModule(moduleId) {
 
   closeSidebarOnMobile();
 }
+
+function showGestaoPage(pageId) {
+  const selected = gestaoNavItems.find((item) => item.dataset.gestaoPage === pageId) || gestaoNavItems[0];
+  if (selected.dataset.gestaoPage === "servicos") {
+    showModule("servicos");
+    document.getElementById("services-title").focus({ preventScroll: true });
+    return;
+  }
+  const isDashboard = selected.dataset.gestaoPage === "dashboard";
+  document.getElementById("gestao-dashboard").hidden = !isDashboard;
+  document.getElementById("gestao-placeholder").hidden = isDashboard;
+  const title = document.getElementById("gestao-placeholder-title");
+  title.textContent = `${selected.textContent} — área em preparação`;
+  gestaoNavItems.forEach((item) => {
+    if (item === selected) item.setAttribute("aria-current", "page");
+    else item.removeAttribute("aria-current");
+  });
+  const heading = isDashboard ? document.getElementById("gestao-dashboard-title") : title;
+  heading.focus({ preventScroll: true });
+  dashContent.scrollTop = 0;
+}
+
+document.querySelectorAll("[data-gestao-page]").forEach((item) => {
+  item.addEventListener("click", () => showGestaoPage(item.dataset.gestaoPage));
+});
 
 function showCrmPage(pageId) {
   const selected = crmNavItems.find((item) => item.dataset.crmPage === pageId) || crmNavItems[0];

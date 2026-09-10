@@ -1573,7 +1573,9 @@ body {
   background: var(--bg);
 }
 
-.crm-heading h2 {
+.crm-heading h2,
+.area-heading h2,
+.area-heading h3 {
   margin: 0 0 6px;
   color: var(--ink);
   font-size: 1.4rem;
@@ -1590,7 +1592,8 @@ body {
   color: var(--ink);
 }
 
-.crm-heading p {
+.crm-heading p,
+.area-heading p {
   margin: 0;
   color: var(--ink-soft);
 }
@@ -1611,7 +1614,8 @@ body {
   text-decoration: underline;
 }
 
-.crm-nav {
+.crm-nav,
+.area-nav {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
@@ -1621,7 +1625,8 @@ body {
   border-radius: var(--radius-md);
 }
 
-.crm-nav-item {
+.crm-nav-item,
+.area-nav-item {
   border: 0;
   border-radius: var(--radius-sm);
   background: transparent;
@@ -1633,12 +1638,14 @@ body {
   cursor: pointer;
 }
 
-.crm-nav-item:hover {
+.crm-nav-item:hover,
+.area-nav-item:hover {
   color: var(--ink);
   background: var(--bg);
 }
 
-.crm-nav-item[aria-current="page"] {
+.crm-nav-item[aria-current="page"],
+.area-nav-item[aria-current="page"] {
   color: #ffffff;
   background: var(--blue-600);
 }
@@ -1741,6 +1748,80 @@ body {
 
 @media (max-width: 640px) {
   .crm-pipeline {
+    grid-template-columns: 1fr;
+  }
+}
+
+#module-gestao .dash-card h3 {
+  color: var(--ink);
+}
+
+.gestao-stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.gestao-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.gestao-action {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.gestao-action svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  color: var(--blue-600);
+}
+
+.gestao-action span:last-child {
+  margin-inline-start: auto;
+}
+
+.gestao-action:hover {
+  border-color: var(--blue-600);
+  background: var(--white);
+}
+
+#module-gestao button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+#module-gestao .stat-value {
+  font-variant-numeric: tabular-nums;
+}
+
+[data-theme="dark"] #module-gestao .stat-icon--blue,
+[data-theme="dark"] #module-gestao .appt-time,
+[data-theme="dark"] .gestao-action svg {
+  color: var(--ink);
+}
+
+@media (max-width: 860px) {
+  .gestao-stats,
+  .gestao-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .gestao-stats,
+  .gestao-actions {
     grid-template-columns: 1fr;
   }
 }
