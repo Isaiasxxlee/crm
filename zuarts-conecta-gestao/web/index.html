@@ -36,9 +36,9 @@
           onerror="this.classList.add('brand-logo--missing')"
         />
         <div class="brand-id">
-          <h1 class="product-name">ZUARTS SISTEMA DE GESTÃO</h1>
-          <p class="company-line">Zuarts Inova Simples (I.S.)</p>
-          <p class="tagline">Tudo o que o seu negócio precisa, em um só lugar.</p>
+          <h1 class="product-name" id="auth-heading">ZUARTS SISTEMA DE GESTÃO</h1>
+          <p class="company-line" id="auth-company">Zuarts Inova Simples (I.S.)</p>
+          <p class="tagline" id="auth-tagline">Tudo o que o seu negócio precisa,<br />em um só lugar.</p>
         </div>
       </header>
 
@@ -91,9 +91,7 @@
           </div>
 
           <div class="panel-card" id="sign-up-card" hidden>
-            <h2 class="card-title">Criar sua conta</h2>
-            <p class="tagline">Preencha seus dados para começar a usar o ZUARTS.</p>
-            <form id="sign-up-form" class="form" novalidate>
+            <form id="sign-up-form" class="form" aria-labelledby="auth-heading" novalidate>
               <label class="field-label" for="sign-up-name">Nome</label>
               <div class="field">
                 <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -150,50 +148,40 @@
 
         </section>
 
-        <section class="services" aria-label="O que o ZUARTS Sistema de Gestão oferece">
-          <article class="service">
-            <span class="service-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <rect x="3" y="3" width="7" height="7" rx="1" />
-                <rect x="14" y="3" width="7" height="7" rx="1" />
-                <rect x="3" y="14" width="7" height="7" rx="1" />
-                <path d="M14 14h7v7h-7z" />
-              </svg>
-            </span>
-            <h3>Gestão</h3>
-            <p>Organize clientes, vendas, produtos, estoque e financeiro.</p>
-          </article>
-          <article class="service">
-            <span class="service-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M12 20s-7-4.6-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.4-9 9-9 9Z" />
-                <path d="M12 8v4l2.5 2.5" />
-              </svg>
-            </span>
-            <h3>Saúde</h3>
-            <p>Gerencie pacientes, profissionais, agenda e atendimentos.</p>
-          </article>
-          <article class="service">
-            <span class="service-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M3 11v2a1 1 0 0 0 1 1h2l4 4V6L6 10H4a1 1 0 0 0-1 1Z" />
-                <path d="M14 8c1.6 1.2 2.6 3 2.6 5s-1 3.8-2.6 5" />
-                <path d="M17 5.5c2.6 1.5 4.4 4 4.4 6.5s-1.8 5-4.4 6.5" />
-              </svg>
-            </span>
-            <h3>Marketing</h3>
-            <p>Cuide das redes sociais, tráfego pago, landing pages e websites.</p>
-          </article>
-          <article class="service">
-            <span class="service-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Z" />
-                <path d="M9.5 12 11 13.5 14.5 10" />
-              </svg>
-            </span>
-            <h3>Administração</h3>
-            <p>Controle usuários, empresa, planos e configurações.</p>
-          </article>
+        <section class="services" aria-labelledby="services-heading">
+          <h2 id="services-heading" class="services-heading">Serviços</h2>
+          <div class="services-grid">
+            <article class="service">
+              <span class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+              <h3>Gestão</h3>
+              <p>Organize clientes, vendas, produtos, estoque e financeiro.</p>
+            </article>
+            <article class="service">
+              <span class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V3h8v4M3 12h18M10 12v3h4v-3"/></svg></span>
+              <h3>Serviços</h3>
+              <p>Gerencie seus serviços, processos e operações.</p>
+            </article>
+            <article class="service">
+              <span class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20S3 15 3 9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6-9 11-9 11Z"/><path d="M9 11h6m-3-3v6"/></svg></span>
+              <h3>Saúde</h3>
+              <p>Gerencie pacientes, profissionais, agenda e atendimentos.</p>
+            </article>
+            <article class="service">
+              <span class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10v4h4l10 5V5L7 10H3Zm4 4 2 7h3l-2-6M21 9v6"/></svg></span>
+              <h3>Marketing</h3>
+              <p>Cuide das redes sociais, tráfego pago, landing pages e websites.</p>
+            </article>
+            <article class="service">
+              <span class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M16 4a3 3 0 0 1 0 6m2 5a5 5 0 0 1 3 4v2"/></svg></span>
+              <h3>CRM</h3>
+              <p>Gerencie leads, contatos, empresas, oportunidades e relacionamento.</p>
+            </article>
+            <article class="service">
+              <span class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3-7 3v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>
+              <h3>Administração</h3>
+              <p>Controle usuários, empresa, planos e configurações.</p>
+            </article>
+          </div>
         </section>
       </main>
 

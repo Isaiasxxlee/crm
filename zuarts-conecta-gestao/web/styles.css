@@ -90,18 +90,20 @@ body {
 .topbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 28px;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
   width: min(1080px, 100%);
   margin: 0 auto;
   padding: clamp(24px, 4vw, 40px) clamp(18px, 4vw, 32px) clamp(14px, 2vw, 22px);
 }
 
 .brand-logo {
-  height: clamp(64px, 9vw, 104px);
-  width: auto;
+  width: clamp(160px, 22vw, 200px);
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
   flex: 0 0 auto;
-  filter: drop-shadow(0 10px 22px rgba(5, 37, 102, 0.18));
 }
 
 .brand-logo--missing {
@@ -109,10 +111,10 @@ body {
 }
 
 .brand-id {
-  text-align: right;
+  text-align: center;
   display: grid;
-  gap: 4px;
-  justify-items: end;
+  gap: 8px;
+  justify-items: center;
 }
 
 .product-name {
@@ -139,7 +141,7 @@ body {
 
 .shell {
   flex: 1;
-  width: min(1080px, 100%);
+  width: min(1440px, 100%);
   margin: 0 auto;
   padding: 0 clamp(18px, 4vw, 32px) 28px;
 }
@@ -165,9 +167,6 @@ body {
   background: var(--white);
 }
 
-.panel-card + .panel-card {
-  margin-top: 18px;
-}
 
 .card-title {
   margin: 0 0 20px;
@@ -394,11 +393,28 @@ body {
 }
 
 .services {
+  width: 100%;
+  margin: 28px auto 0;
+}
+
+.services-heading {
+  margin: 0 0 20px;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 1.06rem;
+  color: var(--blue-900);
+}
+
+.services-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
   gap: 16px;
-  width: min(1080px, 100%);
-  margin: 26px auto 0;
+}
+
+#auth-tagline {
+  white-space: pre-line;
+  line-height: 1.6;
 }
 
 .service {
@@ -449,9 +465,9 @@ body {
 .footer p {
   margin: 0;
 }
-@media (max-width: 1024px) {
-  .services {
-    grid-template-columns: repeat(2, 1fr);
+@media (max-width: 1279px) {
+  .services-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -467,8 +483,8 @@ body {
     text-align: center;
   }
 
-  .brand-logo {
-    height: clamp(64px, 12vw, 88px);
+  .services-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -494,15 +510,16 @@ body {
 
   .actions {
     flex-direction: column;
+    flex-wrap: nowrap;
   }
 
   .btn-install,
   .btn-primary {
-    flex: 1 1 100%;
+    flex: none;
     width: 100%;
   }
 
-  .services {
+  .services-grid {
     grid-template-columns: 1fr;
     gap: 12px;
   }

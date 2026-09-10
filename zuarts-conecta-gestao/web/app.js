@@ -30,6 +30,13 @@ function setMessage(scope, text) {
 }
 
 function showAuthCard(cardId) {
+  const isSignUp = cardId === "sign-up";
+  document.getElementById("auth-heading").textContent = isSignUp ? "CRIAR SUA CONTA" : "ZUARTS SISTEMA DE GESTÃO";
+  document.getElementById("auth-company").hidden = isSignUp;
+  const tagline = document.getElementById("auth-tagline");
+  tagline.textContent = isSignUp
+    ? "Preencha seus dados para começar a usar o ZUARTS."
+    : "Tudo o que o seu negócio precisa,\nem um só lugar.";
   Object.entries(authCards).forEach(([id, el]) => {
     if (el) el.hidden = id !== cardId;
   });
