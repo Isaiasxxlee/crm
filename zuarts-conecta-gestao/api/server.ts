@@ -20,6 +20,8 @@ const server = http.createServer(async (req, res) => {
   const pathname = url.pathname;
 
   if (pathname.startsWith("/api/auth/")) {
+    delete req.headers["x-zuarts-client-ip"];
+    if (req.socket.remoteAddress) req.headers["x-zuarts-client-ip"] = req.socket.remoteAddress;
     await authHandler(req, res);
     return;
   }
@@ -129,6 +131,8 @@ function sendBytes(res: ServerResponse, status: number, type: string, body: Uint
 }
 
 function contentType(filePath: string) {
+  if (filePath.endsWith(".svg")) return "image/svg+xml";
+  if (filePath.endsWith(".png")) return "image/png";
   if (filePath.endsWith(".html")) return "text/html; charset=utf-8";
   if (filePath.endsWith(".js")) return "text/javascript; charset=utf-8";
   if (filePath.endsWith(".css")) return "text/css; charset=utf-8";

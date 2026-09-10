@@ -44,7 +44,7 @@
 
       <main class="shell">
         <section id="auth-view" class="panel">
-          <div class="panel-card">
+          <div class="panel-card" id="sign-in-card">
             <h2 class="card-title">Entrar</h2>
             <form id="sign-in-form" class="form" novalidate>
               <label class="field-label" for="sign-in-email">Email</label>
@@ -81,11 +81,18 @@
                 </button>
               </div>
 
-              <p class="switch">Não tem conta? <a href="#sign-up-card" id="to-sign-up">Cadastre-se</a></p>
+              <p id="sign-in-message" class="message" role="status"></p>
+              <p class="switch" id="resend-line" hidden>
+                <button type="button" id="resend-verification" class="btn btn-secondary">Reenviar e-mail</button>
+              </p>
+
+              <p class="switch">Não tem conta? <a href="#" id="to-sign-up">Cadastre-se</a></p>
             </form>
           </div>
-          <div class="panel-card" id="sign-up-card">
-            <h2 class="card-title">Criar conta</h2>
+
+          <div class="panel-card" id="sign-up-card" hidden>
+            <h2 class="card-title">Criar sua conta</h2>
+            <p class="tagline">Preencha seus dados para começar a usar o ZUARTS.</p>
             <form id="sign-up-form" class="form" novalidate>
               <label class="field-label" for="sign-up-name">Nome</label>
               <div class="field">
@@ -93,10 +100,10 @@
                   <circle cx="12" cy="8" r="4" />
                   <path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" />
                 </svg>
-                <input id="sign-up-name" name="name" type="text" autocomplete="name" placeholder="Seu nome" required />
+                <input id="sign-up-name" name="name" type="text" autocomplete="name" placeholder="Seu nome completo" required />
               </div>
 
-              <label class="field-label" for="sign-up-email">Email</label>
+              <label class="field-label" for="sign-up-email">E-mail</label>
               <div class="field">
                 <span class="field-icon">@</span>
                 <input id="sign-up-email" name="email" type="email" autocomplete="email" placeholder="voce@empresa.com.br" required />
@@ -118,14 +125,29 @@
                   <path d="M7 21v-6h10v6" />
                   <path d="M10 21v-3h4v3" />
                 </svg>
-                <input id="sign-up-company" name="company" type="text" placeholder="Minha Empresa" />
+                <input id="sign-up-company" name="company" type="text" placeholder="Nome da sua empresa" />
               </div>
 
               <button type="submit" class="btn btn-blue btn-wide">Criar conta</button>
+
+              <p id="sign-up-message" class="message" role="status"></p>
+              <p class="switch">Já tem uma conta? <a href="#" id="to-sign-in">Entrar</a></p>
             </form>
           </div>
 
-          <p id="auth-message" class="message" role="status"></p>
+          <div class="panel-card" id="verify-card" hidden>
+            <h2 class="card-title">Confirme seu e-mail</h2>
+            <p class="tagline">Enviamos um link de confirmação para o endereço de e-mail informado.</p>
+            <p id="verify-email" class="tagline"></p>
+            <p class="tagline">Verifique sua caixa de entrada.</p>
+            <div class="actions">
+              <button type="button" id="verify-resend" class="btn btn-install">Reenviar e-mail</button>
+            </div>
+            <p id="verify-message" class="message" role="status"></p>
+            <p class="switch"><a href="#" id="verify-already-confirmed">Já confirmei meu e-mail</a></p>
+            <p class="switch"><a href="#" id="verify-back-to-sign-in">Voltar para entrar</a></p>
+          </div>
+
         </section>
 
         <section class="services" aria-label="O que o ZUARTS Sistema de Gestão oferece">

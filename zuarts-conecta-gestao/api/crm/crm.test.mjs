@@ -69,7 +69,18 @@ async function createAgent(label) {
     method: "POST",
     body: { name: `Agente ${label}`, email, password: PASSWORD },
   });
-  const cookie = sessionCookie(signUp);
+  const userId = signUp.data?.user?.id;
+  const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+  try {
+    await pool.query(`UPDATE "User" SET "emailVerified" = true WHERE "id" = $1`, [userId]);
+  } finally {
+    await pool.end();
+  }
+  const signIn = await api("/api/auth/sign-in/email", {
+    method: "POST",
+    body: { email, password: PASSWORD },
+  });
+  const cookie = sessionCookie(signIn);
   const company = await api("/api/company", {
     method: "POST",
     cookie,
@@ -77,7 +88,7 @@ async function createAgent(label) {
   });
   return {
     cookie,
-    userId: signUp.data?.user?.id,
+    userId,
     companyId: company.data?.company?.id,
     email,
     password: PASSWORD,

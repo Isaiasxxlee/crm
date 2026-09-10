@@ -4,8 +4,19 @@ const authView = document.getElementById("auth-view");
 const sessionView = document.getElementById("session-view");
 const sessionMessage = document.getElementById("session-message");
 const sessionRetry = document.getElementById("session-retry");
+
+const VERIFY_CALLBACK_URL = `${window.location.origin}/?email-verified=1`;
+
+const authCards = {
+  "sign-in": document.getElementById("sign-in-card"),
+  "sign-up": document.getElementById("sign-up-card"),
+  verify: document.getElementById("verify-card"),
+};
+
 const messages = {
-  auth: document.getElementById("auth-message"),
+  "sign-in": document.getElementById("sign-in-message"),
+  "sign-up": document.getElementById("sign-up-message"),
+  verify: document.getElementById("verify-message"),
 };
 
 function inputValue(id) {
@@ -14,21 +25,46 @@ function inputValue(id) {
 
 function setMessage(scope, text) {
   if (messages[scope]) {
-    messages[scope].textContent = text;
+    messages[scope].textContent = text || "";
   }
 }
 
+function showAuthCard(cardId) {
+  Object.entries(authCards).forEach(([id, el]) => {
+    if (el) el.hidden = id !== cardId;
+  });
+}
+
+const pendingRequests = new Map();
+const retryDeadlines = new Map();
+
 function jsonRequest(url, method, body) {
+  if (pendingRequests.has(url)) return pendingRequests.get(url);
+  const remaining = Math.ceil(((retryDeadlines.get(url) || 0) - Date.now()) / 1000);
+  if (remaining > 0) {
+    return Promise.reject(new Error(`Muitas tentativas. Aguarde ${remaining} segundos e tente novamente.`));
+  }
   const init = { method, credentials: "include", headers: {} };
   if (body) {
     init.headers["content-type"] = "application/json";
     init.body = JSON.stringify(body);
   }
-  return fetch(url, init).then(async (res) => {
+  const request = fetch(url, init).then(async (res) => {
     const text = await res.text();
     const data = text ? JSON.parse(text) : {};
+    if (res.status === 429) {
+      const seconds = Number(res.headers.get("x-retry-after") || res.headers.get("retry-after"));
+      if (Number.isFinite(seconds) && seconds > 0) {
+        retryDeadlines.set(url, Date.now() + seconds * 1000);
+        data.message = `Muitas tentativas. Aguarde ${seconds} segundos e tente novamente.`;
+      } else {
+        data.message = "Muitas tentativas. Aguarde antes de tentar novamente.";
+      }
+    }
     return { status: res.status, data };
-  });
+  }).finally(() => pendingRequests.delete(url));
+  pendingRequests.set(url, request);
+  return request;
 }
 
 function initials(name) {
@@ -50,10 +86,32 @@ function setAuthState(state) {
     : "Verificando sessão…";
 }
 
-function showPublic() {
+let pendingAuthCard = null;
+
+function showPublic(cardId) {
   setAuthState("anonymous");
   authView.hidden = false;
+  showAuthCard(cardId || pendingAuthCard || "sign-in");
+  pendingAuthCard = null;
 }
+
+(function readVerificationRedirect() {
+  const params = new URLSearchParams(window.location.search);
+  const verified = params.get("email-verified");
+  const error = params.get("error");
+  if (!verified && !error) return;
+  pendingAuthCard = "sign-in";
+  if (error) {
+    setMessage("sign-in", "Link de confirmação inválido ou expirado.");
+    document.getElementById("resend-line").hidden = false;
+  }
+  params.delete("email-verified");
+  params.delete("error");
+  const query = params.toString();
+  window.history.replaceState({}, "", window.location.pathname + (query ? `?${query}` : ""));
+})();
+
+const PENDING_COMPANY_KEY = "zuarts-pending-company";
 
 function showDashboard(data) {
   const name = (data.user && (data.user.name || data.user.email)) || "Usuário";
@@ -81,6 +139,19 @@ function refreshMe() {
         return;
       }
       if (status === 200 && data?.user?.id) {
+        if (!data.company) {
+          let pendingCompany = "";
+          try {
+            pendingCompany = localStorage.getItem(PENDING_COMPANY_KEY) || "";
+            localStorage.removeItem(PENDING_COMPANY_KEY);
+          } catch {
+            // Local storage indisponível: a empresa é criada com o nome padrão.
+          }
+          jsonRequest("/api/company", "POST", { name: pendingCompany })
+            .then(({ data: companyData }) => showDashboard({ ...data, company: companyData.company, role: companyData.role }))
+            .catch(() => showDashboard(data));
+          return;
+        }
         showDashboard(data);
         return;
       }
@@ -97,50 +168,118 @@ function errorText(data) {
   return "Erro inesperado";
 }
 
+let lastSignInEmail = "";
+
 document.getElementById("sign-in-form").addEventListener("submit", (event) => {
   event.preventDefault();
-  const body = { email: inputValue("sign-in-email"), password: inputValue("sign-in-password") };
-  setMessage("auth", "…");
+  const form = event.currentTarget;
+  if (form.dataset.pending === "true" || !form.reportValidity()) return;
+  form.dataset.pending = "true";
+  const button = form.querySelector("button[type=submit]");
+  button.disabled = true;
+  const email = inputValue("sign-in-email");
+  const body = { email, password: inputValue("sign-in-password") };
+  lastSignInEmail = email;
+  document.getElementById("resend-line").hidden = true;
+  setMessage("sign-in", "…");
   jsonRequest("/api/auth/sign-in/email", "POST", body)
     .then(({ status, data }) => {
       if (status === 200) {
-        refreshMe();
-      } else {
-        setMessage("auth", errorText(data));
+        setMessage("sign-in", "");
+        return refreshMe();
       }
+      if (data && data.code === "EMAIL_NOT_VERIFIED") {
+        setMessage("sign-in", "E-mail ainda não confirmado.");
+        document.getElementById("resend-line").hidden = false;
+        return;
+      }
+      setMessage("sign-in", errorText(data));
     })
-    .catch((err) => setMessage("auth", err.message));
+    .catch((err) => setMessage("sign-in", err.message))
+    .finally(() => {
+      form.dataset.pending = "false";
+      button.disabled = false;
+    });
+});
+
+document.getElementById("resend-verification").addEventListener("click", () => {
+  if (!lastSignInEmail) return;
+  setMessage("sign-in", "Enviando…");
+  jsonRequest("/api/auth/send-verification-email", "POST", { email: lastSignInEmail, callbackURL: VERIFY_CALLBACK_URL })
+    .then(({ status, data }) => {
+      setMessage("sign-in", status === 200 ? "E-mail de confirmação reenviado." : errorText(data));
+    })
+    .catch((err) => setMessage("sign-in", err.message));
 });
 
 document.getElementById("sign-up-form").addEventListener("submit", (event) => {
   event.preventDefault();
+  const form = event.currentTarget;
+  if (form.dataset.pending === "true" || !form.reportValidity()) return;
+  form.dataset.pending = "true";
+  const button = form.querySelector("button[type=submit]");
+  button.disabled = true;
+  const email = inputValue("sign-up-email");
   const body = {
     name: inputValue("sign-up-name"),
-    email: inputValue("sign-up-email"),
+    email,
     password: inputValue("sign-up-password"),
+    callbackURL: VERIFY_CALLBACK_URL,
   };
   const companyName = inputValue("sign-up-company");
-  setMessage("auth", "…");
+  setMessage("sign-up", "…");
   jsonRequest("/api/auth/sign-up/email", "POST", body)
     .then(({ status, data }) => {
       if (status !== 200) {
-        setMessage("auth", errorText(data));
+        setMessage("sign-up", errorText(data));
         return;
       }
-      jsonRequest("/api/company", "POST", { name: companyName })
-        .then(refreshMe)
-        .catch((err) => setMessage("auth", err.message));
+      lastSignInEmail = email;
+      try {
+        localStorage.setItem(PENDING_COMPANY_KEY, companyName || "");
+      } catch {
+        // Local storage indisponível: a empresa é criada com o nome padrão no primeiro login.
+      }
+      document.getElementById("verify-email").textContent = email;
+      showAuthCard("verify");
     })
-    .catch((err) => setMessage("auth", err.message));
+    .catch((err) => setMessage("sign-up", err.message))
+    .finally(() => {
+      form.dataset.pending = "false";
+      button.disabled = false;
+    });
 });
 
 document.getElementById("to-sign-up").addEventListener("click", (event) => {
   event.preventDefault();
-  document.getElementById("sign-up-card").scrollIntoView({ behavior: "smooth", block: "center" });
-  const nameInput = document.getElementById("sign-up-name");
-  if (nameInput) {
-    window.setTimeout(() => nameInput.focus({ preventScroll: true }), 450);
-  }
+  setMessage("sign-in", "");
+  showAuthCard("sign-up");
+});
+
+document.getElementById("to-sign-in").addEventListener("click", (event) => {
+  event.preventDefault();
+  setMessage("sign-up", "");
+  showAuthCard("sign-in");
+});
+
+document.getElementById("verify-resend").addEventListener("click", () => {
+  if (!lastSignInEmail) return;
+  setMessage("verify", "Enviando…");
+  jsonRequest("/api/auth/send-verification-email", "POST", { email: lastSignInEmail, callbackURL: VERIFY_CALLBACK_URL })
+    .then(({ status, data }) => {
+      setMessage("verify", status === 200 ? "E-mail de confirmação reenviado." : errorText(data));
+    })
+    .catch((err) => setMessage("verify", err.message));
+});
+
+document.getElementById("verify-already-confirmed").addEventListener("click", (event) => {
+  event.preventDefault();
+  showAuthCard("sign-in");
+});
+
+document.getElementById("verify-back-to-sign-in").addEventListener("click", (event) => {
+  event.preventDefault();
+  showAuthCard("sign-in");
 });
 
 document.getElementById("dashboard-sign-out").addEventListener("click", () => {

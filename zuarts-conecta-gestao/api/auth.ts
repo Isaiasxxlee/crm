@@ -15,8 +15,22 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: true,
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    autoSignInAfterVerification: false,
+    expiresIn: 60 * 60,
+    sendVerificationEmail: async ({ user, url }) => {
+      console.warn(
+        `[zuarts] Provedor de e-mail nao configurado. Link de confirmacao para ${user.email}: ${url}`,
+      );
+    },
   },
   advanced: {
+    ipAddress: {
+      ipAddressHeaders: ["x-zuarts-client-ip"],
+    },
     database: {
       generateId: "uuid",
     },
