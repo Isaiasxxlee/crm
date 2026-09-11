@@ -3,6 +3,7 @@ import { fromNodeHeaders } from "better-auth/node";
 import type { IncomingHttpHeaders } from "node:http";
 import { prisma } from "./db.js";
 import { auth } from "./auth.js";
+import { createInitialSubscription } from "./plans/service.js";
 
 export type ContextCompany = { id: string; slug: string; name: string };
 
@@ -40,11 +41,12 @@ export async function ensureCompany(userId: string, name?: string): Promise<Cont
   const existing = await findContext(userId);
   if (existing) return existing;
   const companyName = name?.trim() || "Mi Empresa";
-  const company = await prisma.company.create({
-    data: { slug: makeSlug(companyName), name: companyName },
-  });
-  await prisma.membership.create({
-    data: { companyId: company.id, userId, role: "OWNER" },
+  await prisma.$transaction(async (db) => {
+    const company = await db.company.create({
+      data: { slug: makeSlug(companyName), name: companyName },
+    });
+    await db.membership.create({ data: { companyId: company.id, userId, role: "OWNER" } });
+    await createInitialSubscription(company.id, db);
   });
   return findContext(userId);
 }

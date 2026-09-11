@@ -7,6 +7,8 @@ import { auth } from "./auth.js";
 import { prisma } from "./db.js";
 import { authenticateUser, ensureCompany, findContext } from "./tenant.js";
 import { handleCrmRequest } from "./crm/router.js";
+import { handleBusinessProfileRequest } from "./business-profile/router.js";
+import { handlePlansRequest } from "./plans/router.js";
 
 const port = Number(process.env.PORT ?? 3001);
 const distDir = path.resolve(process.cwd(), "dist");
@@ -43,6 +45,16 @@ const server = http.createServer(async (req, res) => {
 
   if (pathname === "/api/company" && req.method === "POST") {
     await handleCompany(req, res);
+    return;
+  }
+
+  if (pathname === "/api/plans" || pathname.startsWith("/api/plans/") || pathname === "/api/subscription" || pathname.startsWith("/api/subscription/")) {
+    await handlePlansRequest(req, res, url);
+    return;
+  }
+
+  if (pathname === "/api/business-profile" || pathname.startsWith("/api/business-profile/")) {
+    await handleBusinessProfileRequest(req, res, url);
     return;
   }
 

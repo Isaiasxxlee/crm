@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { auth } from "../api/auth.js";
 import { prisma } from "../api/db.js";
+import { createInitialSubscription } from "../api/plans/service.js";
 
 const email = process.env.ADMIN_EMAIL?.trim().toLowerCase();
 const password = process.env.ADMIN_PASSWORD;
@@ -42,11 +43,13 @@ if (membership) {
     data: { role: "ADMIN" },
   });
 } else {
-  const company = await prisma.company.create({
-    data: { name: "Zuarts Inova Simples (I.S.)", slug: `zuarts-${Date.now()}` },
-  });
-  await prisma.membership.create({
-    data: { companyId: company.id, userId, role: "ADMIN" },
+  const adminUserId = userId;
+  await prisma.$transaction(async (db) => {
+    const company = await db.company.create({
+      data: { name: "Zuarts Inova Simples (I.S.)", slug: `zuarts-${Date.now()}` },
+    });
+    await db.membership.create({ data: { companyId: company.id, userId: adminUserId, role: "ADMIN" } });
+    await createInitialSubscription(company.id, db);
   });
 }
 

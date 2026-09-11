@@ -30,6 +30,107 @@ model Company {
   crmEvidence   Evidence[]
   crmAgentTasks AgentTask[]
   crmAgentRuns  AgentRun[]
+  businessProfile BusinessProfile?
+  subscriptions Subscription[]
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PENDING
+  SUSPENDED
+  CANCELLED
+  EXPIRED
+}
+
+enum BillingPeriod {
+  MONTHLY
+  QUARTERLY
+  SEMIANNUAL
+  YEARLY
+  CUSTOM
+}
+
+model Plan {
+  id String @id @default(uuid()) @db.Uuid
+  name String @db.VarChar(160)
+  slug String @unique @db.VarChar(80)
+  description String @db.Text
+  price Decimal? @db.Decimal(12, 2)
+  currency String @default("BRL") @db.VarChar(3)
+  billingPeriod BillingPeriod @default(MONTHLY)
+  customPeriodDays Int?
+  minClients Int @default(0)
+  maxClients Int?
+  active Boolean @default(true)
+  isDefault Boolean @default(false)
+  position Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id String @id @default(uuid()) @db.Uuid
+  companyId String @db.Uuid
+  planId String @db.Uuid
+  status SubscriptionStatus @default(ACTIVE)
+  isCurrent Boolean @default(true)
+  startedAt DateTime @default(now())
+  endsAt DateTime?
+  cancelledAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  plan Plan @relation(fields: [planId], references: [id], onDelete: Restrict)
+
+  @@index([companyId, isCurrent])
+  @@index([planId])
+}
+
+model BusinessSegment {
+  id String @id @default(uuid()) @db.Uuid
+  name String @unique @db.VarChar(160)
+  position Int @default(0)
+  businessTypes BusinessType[]
+}
+
+model BusinessType {
+  id String @id @default(uuid()) @db.Uuid
+  segmentId String @db.Uuid
+  name String @db.VarChar(160)
+  position Int @default(0)
+  segment BusinessSegment @relation(fields: [segmentId], references: [id], onDelete: Restrict)
+  specialties Specialty[]
+  profiles BusinessProfile[]
+
+  @@unique([segmentId, name])
+}
+
+model Specialty {
+  id String @id @default(uuid()) @db.Uuid
+  businessTypeId String @db.Uuid
+  name String @db.VarChar(160)
+  position Int @default(0)
+  businessType BusinessType @relation(fields: [businessTypeId], references: [id], onDelete: Restrict)
+  profiles BusinessProfile[]
+
+  @@unique([businessTypeId, name])
+  @@unique([id, businessTypeId])
+}
+
+model BusinessProfile {
+  id String @id @default(uuid()) @db.Uuid
+  companyId String @unique @db.Uuid
+  businessTypeId String @db.Uuid
+  specialtyId String? @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  businessType BusinessType @relation(fields: [businessTypeId], references: [id], onDelete: Restrict)
+  specialty Specialty? @relation(fields: [specialtyId, businessTypeId], references: [id, businessTypeId], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([businessTypeId])
+  @@index([specialtyId, businessTypeId])
 }
 
 model User {

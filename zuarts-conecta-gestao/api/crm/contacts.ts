@@ -6,6 +6,7 @@ import { idFromPath, readJsonBody, sendJson, sendPrismaError } from "./http.js";
 import { parseFields, type FieldRules } from "./validate.js";
 import { RECORD_SOURCE_VALUES } from "./field-enums.js";
 import { ownedCrmCompany, ownedMember, requireOwnedRefs } from "./refs.js";
+import { PlanError, withClientCapacity } from "../plans/service.js";
 
 const PREFIX = "/api/crm/contacts";
 
@@ -90,11 +91,15 @@ async function createContact(req: IncomingMessage, res: ServerResponse, tenantId
     return;
   }
   try {
-    const contact = await prisma.contact.create({
+    const contact = await withClientCapacity(tenantId, (db) => db.contact.create({
       data: { ...parsed.data, companyId: tenantId } as unknown as Prisma.ContactCreateInput,
-    });
+    }));
     sendJson(res, 201, { ok: true, data: contact });
   } catch (error) {
+    if (error instanceof PlanError) {
+      sendJson(res, error.status, { ok: false, error: error.code });
+      return;
+    }
     sendPrismaError(res, error);
   }
 }

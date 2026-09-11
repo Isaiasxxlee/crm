@@ -1,3 +1,27 @@
+import { createBusinessProfile } from "./business-profile.js";
+import { createPlans } from "./plans.js";
+
+const businessProfile = createBusinessProfile(document.getElementById("module-business-profile"), () => refreshMe());
+const plans = createPlans(document.getElementById("profile-plans"), () => refreshMe());
+
+function showProfilePage(page) {
+  businessProfile.reset();
+  plans.reset();
+  document.getElementById("profile-overview").hidden = page !== "overview";
+  document.getElementById("profile-plans").hidden = page !== "plans";
+  document.querySelectorAll("[data-profile-page]").forEach((button) => {
+    if (button.dataset.profilePage === page) button.setAttribute("aria-current", "page");
+    else button.removeAttribute("aria-current");
+  });
+  if (page === "plans") {
+    plans.open();
+    document.getElementById("plans-title").focus();
+  } else businessProfile.open();
+}
+
+document.querySelectorAll("[data-profile-page]").forEach((button) => {
+  button.addEventListener("click", () => showProfilePage(button.dataset.profilePage));
+});
 const publicPage = document.getElementById("public-page");
 const dashboardView = document.getElementById("dashboard-view");
 const authView = document.getElementById("auth-view");
@@ -83,6 +107,10 @@ function initials(name) {
 }
 
 function setAuthState(state) {
+  if (state !== "authenticated") {
+    businessProfile.reset();
+    plans.reset();
+  }
   document.body.dataset.authState = state;
   publicPage.hidden = state !== "anonymous";
   dashboardView.hidden = state !== "authenticated";
@@ -296,6 +324,9 @@ document.getElementById("dashboard-sign-out").addEventListener("click", () => {
 });
 
 const MODULE_LABELS = {
+  "business-profile": "Perfis de Negócio",
+  empresas: "Empresas",
+  usuarios: "Usuários",
   dashboard: "Dashboard",
   servicos: "Serviços",
   gestao: "Gestão",
@@ -331,11 +362,14 @@ const dashContent = document.getElementById("dash-content");
 let currentModule = "dashboard";
 
 function showModule(moduleId) {
+  businessProfile.reset();
+  plans.reset();
   const id = MODULE_LABELS[moduleId] ? moduleId : "dashboard";
   currentModule = id;
   const label = MODULE_LABELS[id];
 
   dashHeaderTitle.textContent = label;
+  dashHeaderTitle.classList.toggle("profile-title", id === "business-profile");
 
   navItems.forEach((item) => {
     const active = item.dataset.module === id;
@@ -353,7 +387,9 @@ function showModule(moduleId) {
   moduleServices.hidden = id !== "servicos" && !isServiceGroup;
   moduleCrm.hidden = id !== "crm";
   moduleGestao.hidden = id !== "gestao";
-  modulePlaceholder.hidden = id === "dashboard" || id === "crm" || id === "gestao" || !moduleServices.hidden;
+  document.getElementById("module-business-profile").hidden = id !== "business-profile";
+  modulePlaceholder.hidden = id === "business-profile" || id === "dashboard" || id === "crm" || id === "gestao" || !moduleServices.hidden;
+  if (id === "business-profile") showProfilePage("overview");
 
   if (!moduleServices.hidden) {
     document.getElementById("services-title").textContent = label;
