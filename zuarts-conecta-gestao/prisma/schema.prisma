@@ -31,6 +31,7 @@ model Company {
   crmAgentTasks AgentTask[]
   crmAgentRuns  AgentRun[]
   businessProfile BusinessProfile?
+  tenantModules TenantModule[]
   subscriptions Subscription[]
 }
 
@@ -67,6 +68,7 @@ model Plan {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   subscriptions Subscription[]
+moduleLinks PlanModule[]
 }
 
 model Subscription {
@@ -85,6 +87,62 @@ model Subscription {
 
   @@index([companyId, isCurrent])
   @@index([planId])
+}
+
+model Module {
+  id           String        @id @default(uuid()) @db.Uuid
+  slug         String        @unique @db.VarChar(80)
+  name         String        @db.VarChar(160)
+  description  String?       @db.Text
+  area         String        @db.VarChar(80)
+  active       Boolean       @default(true)
+  position     Int           @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  capabilities Capability[]
+  planLinks    PlanModule[]
+  tenantLinks  TenantModule[]
+}
+
+model Capability {
+  id          String   @id @default(uuid()) @db.Uuid
+  moduleId    String   @db.Uuid
+  slug        String   @db.VarChar(120)
+  name        String   @db.VarChar(160)
+  description String?  @db.Text
+  position    Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  module      Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@unique([moduleId, slug])
+  @@index([moduleId, position])
+}
+
+model PlanModule {
+  id        String   @id @default(uuid()) @db.Uuid
+  planId    String   @db.Uuid
+  moduleId  String   @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  plan      Plan     @relation(fields: [planId], references: [id], onDelete: Cascade)
+  module    Module   @relation(fields: [moduleId], references: [id], onDelete: Restrict)
+
+  @@unique([planId, moduleId])
+  @@index([moduleId])
+}
+
+model TenantModule {
+  id        String   @id @default(uuid()) @db.Uuid
+  companyId String   @db.Uuid
+  moduleId  String   @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  module    Module   @relation(fields: [moduleId], references: [id], onDelete: Restrict)
+
+  @@unique([companyId, moduleId])
+  @@index([moduleId])
 }
 
 model BusinessSegment {

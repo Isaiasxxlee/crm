@@ -1,0 +1,10 @@
+import { readFileSync } from "node:fs";
+const path = process.argv[1];
+const raw = readFileSync(path, "utf8");
+const text = raw.replace(/\r\n/g, "\n");
+const anchor = '    await handlePlansRequest(req, res, url);\n    return;\n  }\n';
+console.log("anchor in normalized:", text.includes(anchor));
+console.log("anchor in raw:", raw.includes(anchor));
+console.log("bare CR:", (text.match(/\r/g) || []).length);
+const idx = text.indexOf("handlePlansRequest(req, res, url)");
+console.log("around:", JSON.stringify(text.slice(idx - 20, idx + 120)));

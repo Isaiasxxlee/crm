@@ -1,5 +1,6 @@
 import { prisma } from "../db.js";
 import type { Plan, Prisma } from "../generated/client.js";
+import { syncTenantModules } from "../modules/service.js";
 
 type Database = Prisma.TransactionClient;
 
@@ -61,7 +62,9 @@ export async function withClientCapacity<T>(companyId: string, create: (db: Data
 export async function createInitialSubscription(companyId: string, db: Database) {
   const plan = await db.plan.findFirst({ where: { isDefault: true, active: true } });
   if (!plan) return null;
-  return db.subscription.create({ data: { companyId, planId: plan.id } });
+  const subscription = await db.subscription.create({ data: { companyId, planId: plan.id } });
+  await syncTenantModules(companyId, plan.id, db);
+  return subscription;
 }
 
 export function planSelectionReason(plan: Plan, current: Awaited<ReturnType<typeof getCompanyUsage>>) {
@@ -81,7 +84,10 @@ export async function selectCompanyPlan(companyId: string, planId: string) {
     const current = await getCompanyUsage(companyId, db);
     const reason = planSelectionReason(plan, current);
     if (reason) throw new PlanError(reason);
-    if (current.subscription?.planId === planId) return current;
+    if (current.subscription?.planId === planId) {
+      await syncTenantModules(companyId, planId, db);
+      return current;
+    }
     const now = new Date();
     if (current.subscription) {
       await db.subscription.update({
@@ -90,6 +96,7 @@ export async function selectCompanyPlan(companyId: string, planId: string) {
       });
     }
     await db.subscription.create({ data: { companyId, planId, startedAt: now } });
+    await syncTenantModules(companyId, planId, db);
     return getCompanyUsage(companyId, db);
   });
 }
