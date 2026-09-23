@@ -9,7 +9,6 @@ import { authenticateUser, ensureCompany, findContext } from "./tenant.js";
 import { handleCrmRequest } from "./crm/router.js";
 import { handleBusinessProfileRequest } from "./business-profile/router.js";
 import { handlePlansRequest } from "./plans/router.js";
-import { handleModulesRequest } from "./modules/router.js";
 
 const port = Number(process.env.PORT ?? 3001);
 const distDir = path.resolve(process.cwd(), "dist");

@@ -41,7 +41,9 @@ async function api(pathname, { method = "GET", cookie, body } = {}) {
   if (text) {
     try {
       data = JSON.parse(text);
-    } catch {}
+    } catch {
+      data = {};
+    }
   }
   const setCookies = typeof res.headers.getSetCookie === "function" ? res.headers.getSetCookie() : [];
   return { status: res.status, data, setCookies };
@@ -49,10 +51,8 @@ async function api(pathname, { method = "GET", cookie, body } = {}) {
 
 async function waitForServer() {
   for (let attempt = 0; attempt < 200; attempt++) {
-    try {
-      const res = await fetch(`${BASE_URL}/health`);
-      if (res.status === 200) return;
-    } catch {}
+    const res = await fetch(`${BASE_URL}/health`).catch(() => null);
+    if (res?.status === 200) return;
     await new Promise((resolve) => setTimeout(resolve, 150));
   }
   throw new Error("server did not become ready");
@@ -211,9 +211,9 @@ before(async () => {
 after(async () => {
   if (serverProcess) {
     serverProcess.kill();
-    try {
-      await serverProcess.status;
-    } catch {}
+    if (serverProcess.exitCode === null) {
+      await new Promise((resolve) => serverProcess.once("exit", resolve));
+    }
   }
   const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
   try {

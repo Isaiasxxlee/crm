@@ -107,7 +107,11 @@ Nenhuma informação sobre uma pessoa ou empresa deve ser inventada pelo agente.
 
 ## Planos
 
-### Essencial — R$297/mês
+O catálogo de planos vive no banco de dados. Nomes, preços, limites e módulos vêm do registro do plano.
+
+### Essencial — R$100,00/mês
+
+Faixa comercial: 0 a 10 clientes.
 
 - Dashboard
 - Clientes
@@ -116,24 +120,25 @@ Nenhuma informação sobre uma pessoa ou empresa deve ser inventada pelo agente.
 - Vendas
 - Estoque
 - Financeiro
+- Relatórios
 - Usuários
-- Relatórios básicos
-- Web + PWA
+- Configurações
 
-### Comercial — R$497/mês
+### Profissional — preço por definir
 
-Tudo do Essencial +
+Faixa comercial: 11 a 30 clientes.
 
-- Compras
-- Estoque avançado
+- Tudo do Essencial
+- Preço & margem
 - Propostas
-- Preço & Margem
-- Controle de descontos
-- Relatórios avançados
-- Indicadores de desempenho
-- Importação por planilha
-- Recursos comerciais avançados
-- Mais usuários
+
+### Premium — preço por definir
+
+Faixa comercial: 31 clientes ou mais.
+
+- Tudo do Profissional
+
+Preço nulo significa preço por definir. Preço nulo não significa gratuidade.
 
 Não existe Plano Gestão.
 
