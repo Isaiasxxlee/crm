@@ -33,6 +33,9 @@ model Company {
   businessProfile BusinessProfile?
   tenantModules TenantModule[]
   subscriptions Subscription[]
+  channels      Channel[]
+  conversations Conversation[]
+  messages      Message[]
 }
 
 enum SubscriptionStatus {
@@ -381,6 +384,7 @@ model Contact {
   activities Activity[]  @relation("ActivityContact")
   followUps  FollowUp[]  @relation("FollowUpContact")
   evidence   Evidence[]  @relation("EvidenceContact")
+  conversations Conversation[]
 
   @@unique([companyId, email])
   @@index([companyId, crmCompanyId])
@@ -582,4 +586,100 @@ model AgentRun {
   @@index([companyId, status])
   @@index([companyId, taskId])
   @@index([companyId, createdAt])
+}
+
+enum ChannelType {
+  INSTAGRAM
+  MESSENGER
+  WHATSAPP
+}
+
+enum ChannelStatus {
+  ACTIVE
+  DISABLED
+}
+
+enum ConversationStatus {
+  OPEN
+  CLOSED
+}
+
+enum MessageDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  AUDIO
+  VIDEO
+  FILE
+  UNKNOWN
+}
+
+model Channel {
+  id         String        @id @default(uuid()) @db.Uuid
+  companyId  String        @db.Uuid
+  type       ChannelType
+  name       String        @db.VarChar(160)
+  externalId String        @db.VarChar(120)
+  status     ChannelStatus @default(ACTIVE)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  company       Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  conversations Conversation[]
+  messages      Message[]
+
+  @@unique([type, externalId])
+  @@unique([id, companyId])
+  @@index([companyId])
+}
+
+model Conversation {
+  id                     String             @id @default(uuid()) @db.Uuid
+  companyId              String             @db.Uuid
+  channelId              String             @db.Uuid
+  externalConversationId String             @db.VarChar(120)
+  participantName        String?            @db.VarChar(200)
+  contactId              String?            @db.Uuid
+  status                 ConversationStatus @default(OPEN)
+  lastMessageAt          DateTime?
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+
+  company  Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  channel  Channel   @relation(fields: [channelId, companyId], references: [id, companyId], onDelete: Cascade)
+  contact  Contact?  @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  messages Message[]
+
+  @@unique([channelId, externalConversationId])
+  @@unique([id, companyId])
+  @@index([companyId, lastMessageAt])
+  @@index([companyId, channelId])
+  @@index([companyId, contactId])
+}
+
+model Message {
+  id                String           @id @default(uuid()) @db.Uuid
+  companyId         String           @db.Uuid
+  channelId         String           @db.Uuid
+  conversationId    String           @db.Uuid
+  externalMessageId String           @db.VarChar(255)
+  senderExternalId  String           @db.VarChar(120)
+  senderName        String?          @db.VarChar(200)
+  direction         MessageDirection
+  messageType       MessageType      @default(UNKNOWN)
+  text              String?          @db.Text
+  rawPayload        Json
+  sentAt            DateTime
+  createdAt         DateTime         @default(now())
+
+  company      Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  channel      Channel      @relation(fields: [channelId, companyId], references: [id, companyId], onDelete: Cascade)
+  conversation Conversation @relation(fields: [conversationId, companyId], references: [id, companyId], onDelete: Cascade)
+
+  @@unique([companyId, channelId, externalMessageId])
+  @@index([companyId, conversationId, sentAt])
 }

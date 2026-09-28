@@ -9,6 +9,8 @@ import { authenticateUser, ensureCompany, findContext } from "./tenant.js";
 import { handleCrmRequest } from "./crm/router.js";
 import { handleBusinessProfileRequest } from "./business-profile/router.js";
 import { handlePlansRequest } from "./plans/router.js";
+import { handleMetaWebhook } from "./meta/webhook.js";
+import { handleInboxRequest } from "./inbox/router.js";
 
 const port = Number(process.env.PORT ?? 3001);
 const distDir = path.resolve(process.cwd(), "dist");
@@ -55,6 +57,16 @@ const server = http.createServer(async (req, res) => {
 
   if (pathname === "/api/business-profile" || pathname.startsWith("/api/business-profile/")) {
     await handleBusinessProfileRequest(req, res, url);
+    return;
+  }
+
+  if (pathname === "/api/webhooks/meta") {
+    await handleMetaWebhook(req, res, url);
+    return;
+  }
+
+  if (pathname === "/api/inbox" || pathname.startsWith("/api/inbox/")) {
+    await handleInboxRequest(req, res, url);
     return;
   }
 

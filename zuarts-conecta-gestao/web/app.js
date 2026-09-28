@@ -1,8 +1,10 @@
 import { createBusinessProfile } from "./business-profile.js";
 import { createPlans } from "./plans.js";
+import { createInbox } from "./inbox.js";
 
 const businessProfile = createBusinessProfile(document.getElementById("module-business-profile"), () => refreshMe());
 const plans = createPlans(document.getElementById("profile-plans"), () => refreshMe());
+const inbox = createInbox(document.getElementById("module-inbox"), () => refreshMe());
 
 function showProfilePage(page) {
   businessProfile.reset();
@@ -110,6 +112,7 @@ function setAuthState(state) {
   if (state !== "authenticated") {
     businessProfile.reset();
     plans.reset();
+    inbox.reset();
   }
   document.body.dataset.authState = state;
   publicPage.hidden = state !== "anonymous";
@@ -333,6 +336,7 @@ const MODULE_LABELS = {
   saude: "Saúde",
   administracao: "Administração",
   crm: "CRM",
+  inbox: "Caixa de Entrada",
   agenda: "Agenda",
   clientes: "Clientes",
   atendimentos: "Atendimentos",
@@ -364,6 +368,7 @@ let currentModule = "dashboard";
 function showModule(moduleId) {
   businessProfile.reset();
   plans.reset();
+  inbox.reset();
   const id = MODULE_LABELS[moduleId] ? moduleId : "dashboard";
   currentModule = id;
   const label = MODULE_LABELS[id];
@@ -382,14 +387,16 @@ function showModule(moduleId) {
   });
 
   const isServiceGroup = ["saude", "administracao"].includes(id);
-  dashHeaderTitle.classList.toggle("service-title", id === "crm" || id === "servicos" || id === "gestao" || isServiceGroup);
+  dashHeaderTitle.classList.toggle("service-title", id === "crm" || id === "inbox" || id === "servicos" || id === "gestao" || isServiceGroup);
   moduleDashboard.hidden = id !== "dashboard";
   moduleServices.hidden = id !== "servicos" && !isServiceGroup;
   moduleCrm.hidden = id !== "crm";
   moduleGestao.hidden = id !== "gestao";
+  document.getElementById("module-inbox").hidden = id !== "inbox";
   document.getElementById("module-business-profile").hidden = id !== "business-profile";
-  modulePlaceholder.hidden = id === "business-profile" || id === "dashboard" || id === "crm" || id === "gestao" || !moduleServices.hidden;
+  modulePlaceholder.hidden = id === "inbox" || id === "business-profile" || id === "dashboard" || id === "crm" || id === "gestao" || !moduleServices.hidden;
   if (id === "business-profile") showProfilePage("overview");
+  if (id === "inbox") inbox.open();
 
   if (!moduleServices.hidden) {
     document.getElementById("services-title").textContent = label;

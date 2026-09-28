@@ -19,6 +19,7 @@
     "db:deploy": "prisma migrate deploy",
     "db:check": "tsx scripts/check-db.ts",
     "admin:setup": "tsx scripts/setup-admin.ts",
+    "channel:register": "tsx scripts/register-channel.ts",
     "start:api": "node api/dist/server.js",
     "start:web": "node api/dist/server.js"
   },
