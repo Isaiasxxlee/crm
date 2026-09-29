@@ -208,6 +208,16 @@ function errorText(data) {
 
 let lastSignInEmail = "";
 
+document.getElementById("sign-in-password-toggle").addEventListener("click", (event) => {
+  const toggle = event.currentTarget;
+  const input = document.getElementById("sign-in-password");
+  const reveal = input.type === "password";
+  input.type = reveal ? "text" : "password";
+  toggle.setAttribute("aria-label", reveal ? "Ocultar senha" : "Mostrar senha");
+  toggle.querySelector(".field-toggle-show").toggleAttribute("hidden", reveal);
+  toggle.querySelector(".field-toggle-hide").toggleAttribute("hidden", !reveal);
+});
+
 document.getElementById("sign-in-form").addEventListener("submit", (event) => {
   event.preventDefault();
   const form = event.currentTarget;

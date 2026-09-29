@@ -360,6 +360,46 @@ body {
 .field input:user-invalid {
   border-color: var(--danger);
 }
+
+.field-password input {
+  padding-right: 46px;
+}
+
+.field-toggle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.field-toggle:hover {
+  color: var(--ink);
+}
+
+.field-toggle:focus-visible {
+  outline: 2px solid var(--blue-600);
+  outline-offset: 1px;
+}
+
+.field-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+.field-toggle svg[hidden] {
+  display: none;
+}
 .btn {
   display: inline-flex;
   align-items: center;
